@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useState, useEffect } from 'react';
 import TableComponent from '../components/TableComponent';
-import Button from '../layouts/ButtonLayout';
+import ButtonLayout from '../layouts/ButtonLayout';
+import ConfirmLayout from '../layouts/ConfirmLayout';
 import { Pagination } from 'antd';
 import HeaderContent from '../components/HeaderContent';
 const columns = [
@@ -29,9 +30,15 @@ const columns = [
         title: 'Edit',
         dataIndex: 'id',
         render: id => <Fragment>
-                <Button value={id} type="success" text="View" />
-                <Button value={id} type="primary" text="Edit" />
-                <Button value={id} type="danger" text="Delete" />
+                <ButtonLayout size="small" value={id} type="success" text="View" />
+                <ButtonLayout size="small" value={id} type="primary" text="Edit" />
+                <ButtonLayout 
+                    onClick={() => ConfirmLayout('Delete', 'Do you want delete this record ?', 'Delete', 'No')} 
+                    size="small" 
+                    value={id} 
+                    type="danger" 
+                    text="Delete" 
+                />
             </Fragment>,
         width: '20%'
     },
@@ -144,32 +151,32 @@ const pagination = {
     defaultCurrent: 1
 }
 
-let key;
-class MajorComponent extends Component {
-    constructor(props) {
-        super(props);
+function Get(page, pageSize) {
+    console.log(page)
+    console.log(pageSize)
+}
 
-        this.state = {
-            currentNo: 0,
-            totalRecord: 10
-        }
-    }
-    componentWillMount() {
-        const { currentNo } = this.state;
+let key;
+const MajorComponent = ({}) => {
+
+    const pageSize = 10;
+    const [ currentNo, setCurrentNo ] = useState(0);
+    const [ isLoading, setIsLoading ] = useState(false);
+    useEffect(() => {
         key = currentNo;
         data.map(item => {
             key++;
             item.key = key;
         })
-    }
-    render() {
+    })
         
         return (
             <Fragment>
                 <HeaderContent />
-                <TableComponent columns={columns} isLoading={false} data={data} rowKey={record => record.id} pagination={pagination}  />
+                <TableComponent columns={columns} isLoading={isLoading} data={data} rowKey={record => record.id}  />
+                <br />
+                <Pagination onChange={Get} defaultCurrent={1} total={data.length} />
             </Fragment>
         )
-    }
 }
 export default MajorComponent;

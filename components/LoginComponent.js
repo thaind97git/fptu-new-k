@@ -16,26 +16,34 @@ class LoginComponent extends Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            axios.post(URL_USER.CHECK_LOGIN, {username: values.username, password: values.password})
+            if(!err) {
+                axios.post(URL_USER.CHECK_LOGIN, {username: values.username, password: values.password})
                 .then(rs => {
-                    console.log(rs)
-                    if (rs.status === 200) {
+                    if (rs.data.status === 200) {
+                        storageConfig.setToken(rs.data.data.token);
+                        storageConfig.setUsername(rs.data.data.username);
                         Router.replace({
                             pathname: "/dashboard"
                         })
                     }
-                    storageConfig.setToken(rs.data.token);
                 }).catch(err => {
                     console.log(err)
                 })
-            console.log('Received values of form: ', values);
+            }
         });
     };
 
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Row type="flex" align="middle" justify="center" style={{ height: '100vh', background:'url(/static/image/bg2.jpeg) no-repeat', backgroundSize: 'cover' }}>
+            <Row type="flex" align="middle" justify="center" 
+                style={{ 
+                    height: '100vh', 
+                    background:'url(/static/image/bg2.jpeg) no-repeat', 
+                    backgroundSize: 'cover',
+                    zIndex: 1030
+                }}
+            >
                 <Col xs={20} sm={8} md={8} style={styleForm}>
                     <Title level={2} > <div>&nbsp;</div> <span>&nbsp;</span> Admin site FPTU New K</Title>
                     <Form onSubmit={this.handleSubmit} className="login-form">

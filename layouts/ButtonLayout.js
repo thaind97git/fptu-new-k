@@ -1,21 +1,37 @@
 import { Fragment } from "react";
 
-const Button = ({ text, type, onClick, onChange, value, className }) => {
+const arraySize = ["middle", "small", "big"]
+
+const ButtonLayout = ({ text, type, onClick, onChange, value, className, size }) => {
+    const sizeClass = arraySize.find(e => e == size) ? arraySize.find(e => e == size) : ""
     return (
         <Fragment>
-            <button className={type + " " + className} onClick={onClick} onChange={onChange} value={value}>
+            <button 
+                className={"btn " + type + " " + className + " " + sizeClass} 
+                onClick={onClick} 
+                onChange={onChange} 
+                value={value}>
                 {text}
             </button>
             <style jsx>{`
                 button {
                     border: none;
-                    padding: 5px 10px;
                     outline: none;
+                    padding: 6px 12px;
                     border-radius: 3px;
                     margin: 3px
                 }
+                .middle {
+                    padding: 6px 12px;
+                }
+                .small {
+                    padding: 2px 4px;
+                }
+                .big {
+                    padding: 12px 24px;
+                }
                 .primary {
-                    background-color: rgb(63, 81, 181);
+                    background-color: #2196F3;
                     color: white;
                 }
                 .success {
@@ -34,9 +50,16 @@ const Button = ({ text, type, onClick, onChange, value, className }) => {
                 .success,.primary,.danger,.default:hover {
                     cursor: pointer;
                 }
+
+
+                .btn:hover {
+                    transition: all 0.3s ease;
+                    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
+                    opacity: 0.9
+                }
             `}</style>
         </Fragment>
     )
 }
 
-export default Button;
+export default ButtonLayout;

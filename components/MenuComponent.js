@@ -1,51 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { pick } from 'lodash/fp';
 import { Icon, Menu } from 'antd';
 import Link from 'next/link';
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { SET_OPEN_KEYS, SET_DEFAULT_KEYS } from '../store/MenuState';
-
-const connectToRedux = connect(pick(['menus', 'openKeys', 'defaultKeys']), null);
-
-/**
- * Find Parent menu in array menus by path
- * @param {String} path 
- * @param {Array} menuItem 
- */
-function findMenuItemByPath(path, menuItem) {
-    return menuItem.filter(item => item.subLink == path);
-}
-/**
- * Find Sub menu in array menus.subItem by path
- * @param {String} path 
- * @param {Arrray} subItemArray 
- */
-function findSubItemByPath(path, subItemArray) {
-    return subItemArray.filter(item => item.itemLink == path);
-}
-
-const getOpenKeys = (path, menus) => {
-    let openKeysSelected;
-    const subMenu = findMenuItemByPath(path, menus);
-    if (subMenu !== undefined && subMenu.length !== 0) {
-        openKeysSelected = subMenu[0].subKey
-    } else {
-        for (let item of menus) {
-            const subItem = findSubItemByPath(path, item.subItem);
-            if (subItem !== undefined && subItem.length !== 0) {
-                openKeysSelected = item.subKey
-            }
-        }
-    }
-    return [openKeysSelected];
-}
+import { getOpenKeys, getDefaultKeys, menus } from '../config/menuConfig';
 
 class MenuComponent extends Component {
 
     constructor(props) {
         super(props);
-        const { path, menus } = this.props;
+        const { path } = this.props;
         this.state = {
             openKeys: getOpenKeys(path, menus)
         };
@@ -65,16 +28,17 @@ class MenuComponent extends Component {
         }
     };
     render() {
-        const { menus, defaultKeys, path, setOpenKeys, setDefaultKeys } = this.props;
-        console.log(this.state.openKeys)
+        const { path } = this.props;
+        const { openKeys } = this.state;
         return (
             <Menu
                 mode="inline"
-                defaultSelectedKeys={defaultKeys}
+                defaultSelectedKeys={getDefaultKeys(path, menus)}
                 // defaultOpenKeys={['sub2']}
-                openKeys={this.state.openKeys}
+                openKeys={openKeys}
                 onOpenChange={this.onOpenChange}
-                style={{ height: '100%', borderRight: '1px solid #dcdcdc' }}
+                style={{ height: '100%', borderRight: '1px solid #dcdcdc', overflowY: 'auto'}}
+                className="menus"
             >
                 {
                     menus.map((item) => {
@@ -112,4 +76,4 @@ class MenuComponent extends Component {
     }
 }
 
-export default connectToRedux(MenuComponent);
+export default MenuComponent;

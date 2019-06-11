@@ -1,13 +1,13 @@
 import axios from 'axios';
 import Router from 'next/router';
 import { URL_USER } from '../constant/UrlApi';
-import * as localStorage from '../config/storageConfig';
+import * as storageConfig from '../config/storageConfig';
 
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 
 export const checkAuthen = () => dispatch => {
-    const token = localStorage.getToken();
+    const token = storageConfig.getToken();
     if (!token) {
         dispatch(login_fail());
     } else {
@@ -24,7 +24,7 @@ export const checkAuthen = () => dispatch => {
     }
 }
 export const checkLogin = () => dispatch => {
-    const token = localStorage.getToken();
+    const token = storageConfig.getToken();
     if (!token) {
         dispatch(login_fail());
     } else {
@@ -54,6 +54,7 @@ const login_fail = () => ({
         data: "Login fail !"
     }
 })
+
 
 export default {
     isLoggedIn(state = false, { type, payload }) {

@@ -8,7 +8,7 @@ const Tablecomponent = ({ columns, data, handleTableChange, isLoading, paginatio
                 columns={columns}
                 rowKey={rowKey}
                 dataSource={data}
-                pagination={pagination || {}}
+                pagination={pagination || false }
                 loading={isLoading}
                 onChange={handleTableChange}
             />

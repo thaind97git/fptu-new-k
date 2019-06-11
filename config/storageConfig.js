@@ -1,5 +1,6 @@
 
 const key = 'j_token';
+const __username = 'j_username'
 /**
  * Get value with `key` from Web Storage
  * @name getItem
@@ -49,4 +50,12 @@ export const getToken = () => {
 }
 export const removeToken = () => {
     return localStorage.removeItem(key);
+}
+
+export const setUsername = (username) => {
+    return localStorage.setItem(__username, username)
+}
+
+export const getUsername = () => {
+    return localStorage.getItem(__username)
 }
