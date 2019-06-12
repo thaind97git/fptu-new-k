@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { get, flow, pick } from 'lodash/fp';
 import { Form, Icon, Input, Button, Row, Col, Typography } from 'antd';
 import Router from 'next/router';
 import { URL_USER } from '../constant/UrlApi';
@@ -10,26 +11,22 @@ const styleForm = {
     padding: '20px 50px',
 }
 
-
 const { Title } = Typography;
 
 class LoginComponent extends Component {
     handleSubmit = e => {
         e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if(!err) {
-                axios.post(URL_USER.CHECK_LOGIN, {username: values.username, password: values.password})
-                .then(rs => {
-                    if (rs.data.status === 200) {
-                        storageConfig.setToken(rs.data.data.token);
-                        storageConfig.setUsername(rs.data.data.username);
-                        Router.replace({
-                            pathname: "/dashboard"
-                        })
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
+        this.props.form.validateFields(async (err, values) => {
+            if (!err) {
+                const getRespLogin = await axios.post(URL_USER.CHECK_LOGIN, { username: values.username, password: values.password })
+                    .then(get('data')).catch(get('data'))
+                if (getRespLogin.status === 200) {
+                    storageConfig.setToken(getRespLogin.data.token);
+                    storageConfig.setUsername(getRespLogin.data.username);
+                    Router.replace({
+                        pathname: "/dashboard"
+                    })
+                }
             }
         });
     };
@@ -37,10 +34,10 @@ class LoginComponent extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Row type="flex" align="middle" justify="center" 
-                style={{ 
-                    height: '100vh', 
-                    background:'url(/static/image/bg2.jpeg) no-repeat', 
+            <Row type="flex" align="middle" justify="center"
+                style={{
+                    height: '100vh',
+                    background: 'url(/static/image/bg2.jpeg) no-repeat',
                     backgroundSize: 'cover',
                     zIndex: 1030
                 }}

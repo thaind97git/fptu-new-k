@@ -33,7 +33,6 @@ const AdminPageLayout = ({ children }) => {
             </Layout>
             <style jsx>{`
                     .admin-content {
-                        padding: 24px;
                         background: #fff;
                         text-align: center
                     }

@@ -32,60 +32,64 @@ const CreateMajorComponent = (props) => {
     return (
         <Fragment>
             <HeaderContent title="Create new major" />
-            <Form  {...formItemLayout} onSubmit={() => createMajor(event, props)}>
-                <Row>
-                    <Col span={24} md={24} lg={12}>
-                        <Form.Item label="Tên ngành" hasFeedback>
-                            {getFieldDecorator('name', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: "Major name is required !"
-                                    }
-                                ]
-                            })(<Input />)}
+            <div className="padding-table">
+                <Form  {...formItemLayout} onSubmit={() => createMajor(event, props)}>
+                    <Row>
+                        <Col span={24} md={24} lg={12}>
+                            <Form.Item label="Tên ngành" hasFeedback>
+                                {getFieldDecorator('name', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: "Major name is required !"
+                                        }
+                                    ]
+                                })(<Input />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} md={24} lg={12}>
+                            <Form.Item label="Mã ngành" hasFeedback>
+                                {getFieldDecorator('password', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: 'Please input your password!',
+                                        }
+                                    ],
+                                })(<Input />)}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24} md={24} lg={12}>
+                            <Form.Item label="Tổ hợp môn" hasFeedback>
+                                {getFieldDecorator('gourp-major', {
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: "Major name is required !"
+                                        }
+                                    ]
+                                })(<Input />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} md={24} lg={12}>
+                            <Form.Item label="Active">
+                                {getFieldDecorator('active', {
+                                    valuePropName: 'checked',
+                                })(<Checkbox>Active</Checkbox>)}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row type="flex" align="middle" justify="center">
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" >
+                                Create new major
+                        </Button>
                         </Form.Item>
-                    </Col>
-                    <Col span={24} md={24} lg={12}>
-                        <Form.Item label="Mã ngành" hasFeedback>
-                            {getFieldDecorator('password', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: 'Please input your password!',
-                                    }
-                                ],
-                            })(<Input />)}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24} md={24} lg={12}>
-                        <Form.Item label="Tổ hợp môn" hasFeedback>
-                            {getFieldDecorator('gourp-major', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message: "Major name is required !"
-                                    }
-                                ]
-                            })(<Input />)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={24} md={24} lg={12}>
-                        <Form.Item label="Active">
-                            {getFieldDecorator('active', {
-                                valuePropName: 'checked',
-                            })(<Checkbox>Active</Checkbox>)}
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Create new major
-                </Button>
-                </Form.Item>
-            </Form>
+                    </Row>
+                </Form>
+            </div>
         </Fragment>
     )
 }

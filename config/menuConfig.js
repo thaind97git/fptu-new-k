@@ -23,14 +23,14 @@ export const menus = [
     {
         subKey: 'sub3',
         subIcon: 'team',
-        subText: 'Account',
+        subText: 'User',
         subLink: undefined,
         subItem: [
             {
                 itemKey: 'sub3.1',
                 itemLink: '/user',
                 itemIcon: 'unordered-list',
-                itemText: 'List acount'
+                itemText: 'List user'
             },
             {
                 itemKey: 'sub3.2',

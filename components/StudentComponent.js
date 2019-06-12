@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Component, Fragment, useState, useEffect } from 'react';
 import TableComponent from '../components/TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
@@ -34,7 +34,7 @@ const columns = [
             <ButtonLayout size="small" value={id} type="primary" text="Edit" />
             <ButtonLayout
                 onClick={() => ConfirmLayout({title: 'Delete', content: 'Do you want delete this record ?', 
-                okText: 'Delete', cancelText: 'No'})}
+                 okText: 'Delete', cancelText: 'No'})}
                 size="small"
                 value={id}
                 type="danger"
@@ -162,7 +162,7 @@ data.map(item => {
     currentNo++;
     item.key = currentNo;
 })
-const MajorComponent = ({ }) => {
+const StudentComponent = ({ }) => {
 
     const pageSize = 10;
     const [isLoading, setIsLoading] = useState(false);
@@ -171,7 +171,7 @@ const MajorComponent = ({ }) => {
 
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="Danh sách ngành học" />
+            <HeaderContent isSearch={true} title="Danh sách sinh viên" />
             <div className="padding-table">
                 <TableComponent columns={columns} isLoading={isLoading} data={data} rowKey={record => record.id} />
                 <br />
@@ -180,4 +180,4 @@ const MajorComponent = ({ }) => {
         </Fragment>
     )
 }
-export default MajorComponent;
+export default StudentComponent;

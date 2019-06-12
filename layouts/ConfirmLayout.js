@@ -6,18 +6,18 @@ function defaultFunc(){
     console.log('default confirm !')
 }
 
-function ConfirmLayout(
-    title = 'Do you want to delete these items?',
-    content = 'When clicked the OK button, this dialog will be closed after 1 second',
-    okText = "Ok",
+function ConfirmLayout({
+    title,
+    content,
+    okText,
     cancelText = "Cancel",
     functionOk
-) {
+}) {
     confirm({
-        title: title,
-        content: content,
-        okText: okText,
-        cancelText: cancelText,
+        title: title || 'Title confirm default !',
+        content: content || 'Content confirm default !',
+        okText: okText || 'OK',
+        cancelText: cancelText || 'Cancel',
         onOk() {
             return (functionOk ? functionOk() : defaultFunc())
         },

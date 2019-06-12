@@ -6,30 +6,32 @@ import { Fragment } from 'react';
 import axios from 'axios';
 import { URL_USER } from '../constant/UrlApi';
 
-const DashboardComponent = ({}) => {
+const DashboardComponent = ({ }) => {
     return (
         <Fragment>
-            Dashboard Component
-            <ButtonLayout onClick={() => DialogLayout('success', <h2>Success</h2>, 'completed !')} text="Success" type="success" />
-            <ButtonLayout onClick={() => ConfirmLayout()} text="Primary" type="primary" />
-            <ButtonLayout onClick={() => DialogLayout('error', <h2>Error</h2>, 'something wrong !') } text="Danger" type="danger" />
-            <ButtonLayout text="Default" type="default" />
-            
-            <ModelAsycnLayout 
-                titleModel={<h3>Here is model example about asycn</h3>}
-                okModelText="Save"
-                cancelModelText="Cancel"
-                PromiseCallAPI={axios.get(URL_USER.ALL_USER)}
-                titleButton="Open Modal with async logic"
-                typeButton="primary"
-                sizeButton="middle"
-                titleSuccessDialog={<h1>Success</h1>}
-                contentErrorDialog="Completed !"
-                titleErrorDialog={<h2>Error</h2>}
-                contentErrorDialog="Something wrong !"
-            >
-                <h1>ModelComponent</h1>
-            </ModelAsycnLayout>
+            <div className="padding-table">
+                Dashboard Component
+                <ButtonLayout onClick={() => DialogLayout('success', <h2>Success</h2>, 'completed !')} text="Success" type="success" />
+                <ButtonLayout onClick={() => ConfirmLayout({})} text="Primary" type="primary" />
+                <ButtonLayout onClick={() => DialogLayout('error', <h2>Error</h2>, 'something wrong !')} text="Danger" type="danger" />
+                <ButtonLayout text="Default" type="default" />
+
+                <ModelAsycnLayout
+                    titleModel={<h3>Here is model example about asycn</h3>}
+                    okModelText="Save"
+                    cancelModelText="Cancel"
+                    PromiseCallAPI={axios.get(URL_USER.ALL_USER)}
+                    titleButton="Open Modal with async logic"
+                    typeButton="primary"
+                    sizeButton="middle"
+                    titleSuccessDialog={<h1>Success</h1>}
+                    contentErrorDialog="Completed !"
+                    titleErrorDialog={<h2>Error</h2>}
+                    contentErrorDialog="Something wrong !"
+                >
+                    <h1>ModelComponent</h1>
+                </ModelAsycnLayout>
+            </div>
         </Fragment>
     )
 }
