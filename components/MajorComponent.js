@@ -157,22 +157,22 @@ function Get(page, pageSize) {
 }
 
 let key;
+let currentNo = 0;
+data.map(item => {
+    currentNo++;
+    item.key = currentNo;
+})
+console.log(currentNo)
 const MajorComponent = ({}) => {
 
     const pageSize = 10;
-    const [ currentNo, setCurrentNo ] = useState(0);
     const [ isLoading, setIsLoading ] = useState(false);
     useEffect(() => {
-        key = currentNo;
-        data.map(item => {
-            key++;
-            item.key = key;
-        })
-    })
+    }, [])
         
         return (
             <Fragment>
-                <HeaderContent />
+                <HeaderContent isSearch={true} title="Danh sách ngành học" />
                 <TableComponent columns={columns} isLoading={isLoading} data={data} rowKey={record => record.id}  />
                 <br />
                 <Pagination onChange={Get} defaultCurrent={1} total={data.length} />

@@ -2,7 +2,7 @@ import { Fragment } from "react";
 
 const arraySize = ["middle", "small", "big"]
 
-const ButtonLayout = ({ text, type, onClick, onChange, value, className, size }) => {
+const ButtonLayout = ({ text, type = 'default', onClick, onChange, value, className = "", size = "middle", typeButton }) => {
     const sizeClass = arraySize.find(e => e == size) ? arraySize.find(e => e == size) : ""
     return (
         <Fragment>
@@ -10,7 +10,8 @@ const ButtonLayout = ({ text, type, onClick, onChange, value, className, size })
                 className={"btn " + type + " " + className + " " + sizeClass} 
                 onClick={onClick} 
                 onChange={onChange} 
-                value={value}>
+                value={value}
+                type={typeButton}>
                 {text}
             </button>
             <style jsx>{`

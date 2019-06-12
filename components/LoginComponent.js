@@ -10,6 +10,7 @@ const styleForm = {
     padding: '20px 50px',
 }
 
+
 const { Title } = Typography;
 
 class LoginComponent extends Component {

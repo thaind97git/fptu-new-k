@@ -13,7 +13,7 @@ export const menus = [
         subLink: undefined,
         subItem: [
             {
-                itemKey: '1',
+                itemKey: 'sub2.1',
                 itemLink: '/student',
                 itemIcon: 'unordered-list',
                 itemText: 'List student'
@@ -27,13 +27,13 @@ export const menus = [
         subLink: undefined,
         subItem: [
             {
-                itemKey: '2',
+                itemKey: 'sub3.1',
                 itemLink: '/user',
                 itemIcon: 'unordered-list',
                 itemText: 'List acount'
             },
             {
-                itemKey: '3',
+                itemKey: 'sub3.2',
                 itemLink: '/admin',
                 itemIcon: 'unordered-list',
                 itemText: 'List admin'
@@ -47,10 +47,16 @@ export const menus = [
         subLink: undefined,
         subItem: [
             {
-                itemKey: '4',
+                itemKey: 'sub4.1',
                 itemLink: '/major',
                 itemIcon: 'unordered-list',
                 itemText: 'List major'
+            },
+            {
+                itemKey: 'sub4.2',
+                itemLink: '/major/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new major'
             }
         ]
     }

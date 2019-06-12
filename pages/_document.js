@@ -16,6 +16,11 @@ export default class MyDocument extends Document {
                         type="text/css"
                         href="/static/access/antd.min.css"
                     />
+                    <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="/static/access/main.css"
+                    />
                     <link rel="shortcut icon" href="/static/image/favicon.png"></link>
                 </Head>
                 <body>

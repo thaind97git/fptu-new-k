@@ -25,17 +25,17 @@ const ModelAsycnLayout = ({
         PromiseCallAPI.then((rs) => {
             setVisible(false)
             setConfirmLoading(false)
-            isDisplayDialog && DialogComponent('success', titleSuccessDialog, contentSuccessDialog)
+            isDisplayDialog && DialogLayout('success', titleSuccessDialog, contentSuccessDialog)
         }, err => {
             setVisible(false)
             setConfirmLoading(false)
-            isDisplayDialog && DialogComponent('error', titleErrorDialog, contentErrorDialog)
+            isDisplayDialog && DialogLayout('error', titleErrorDialog, contentErrorDialog)
         })
     };
 
     return (
         <div>
-            <ButtonComponent
+            <ButtonLayout
                 text={titleButton}
                 type={typeButton}
                 onClick={() => setVisible(true)}
