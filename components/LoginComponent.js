@@ -1,32 +1,36 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { get, flow, pick } from 'lodash/fp';
-import { Form, Icon, Input, Button, Row, Col, Typography } from 'antd';
+import { Form, Icon, Input, Button, Row, Col } from 'antd';
 import Router from 'next/router';
 import { URL_USER } from '../constant/UrlApi';
 import * as storageConfig from '../config/storageConfig';
+import * as toast from '../libs/Toast';
 
 const styleForm = {
     backgroundColor: '#f5f5f5',
     padding: '20px 50px',
+    boxShadow: '0 8px 16px -8px rgba(241, 144, 0, 0.6)'
 }
-
-const { Title } = Typography;
 
 class LoginComponent extends Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
-                const getRespLogin = await axios.post(URL_USER.CHECK_LOGIN, { username: values.username, password: values.password })
-                    .then(get('data')).catch(get('data'))
-                if (getRespLogin.status === 200) {
-                    storageConfig.setToken(getRespLogin.data.token);
-                    storageConfig.setUsername(getRespLogin.data.username);
-                    Router.replace({
-                        pathname: "/dashboard"
+                axios.post(URL_USER.CHECK_LOGIN, { username: values.username, password: values.password })
+                    .then(rs => {
+                        if (rs.data.status === 200) {
+                            storageConfig.setToken(rs.data.data.token);
+                            storageConfig.setUsername(rs.data.data.username);
+                            Router.replace({
+                                pathname: "/dashboard"
+                            })
+                        } else {
+                            toast.errorToast('Login fail !')
+                        }
+                    }).catch(err => {
+                        toast.errorToast('Some thing wrong !')
                     })
-                }
             }
         });
     };
@@ -42,8 +46,8 @@ class LoginComponent extends Component {
                     zIndex: 1030
                 }}
             >
-                <Col xs={20} sm={8} md={8} style={styleForm}>
-                    <Title level={2} > <div>&nbsp;</div> <span>&nbsp;</span> Admin site FPTU New K</Title>
+                <Col xs={20} sm={12} md={12} lg={8} style={styleForm}>
+                    <h1 className="align-center"> Admin site FPTU New K</h1>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
                             {getFieldDecorator('username', {

@@ -19,7 +19,7 @@ const HeaderContent = ({ title, isSearch }) => {
                                     <InputLayout placeholder="Input search" />
                                 </Col>
                                 <Col span={6}>
-                                    <ButtonLayout text="Search" type="primary" size="big" />
+                                    <ButtonLayout text="Search" type="primary" size="middle" />
                                 </Col>
                             </Row>
                         </Col>

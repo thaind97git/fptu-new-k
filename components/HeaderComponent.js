@@ -20,7 +20,7 @@ const menu = (username) => {
                 </a>
             </Menu.Item>
             <Menu.Item>
-                <a onClick={() => logout()} target="_blank" rel="noopener noreferrer">
+                <a onClick={logout} target="_blank" rel="noopener noreferrer">
                     <Icon type="logout" />   Logout, {username}
                 </a>
             </Menu.Item>
@@ -47,7 +47,7 @@ const HeaderComponent = ({ title }) => {
                     </Col>
                     <Col span={1}>
                         <Dropdown overlay={menu(username)} placement="bottomRight">
-                            <Avatar size="large" icon="user" />
+                            <Avatar size="default" icon="user" />
                         </Dropdown>
                     </Col>
                 </Row>

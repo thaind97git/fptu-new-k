@@ -19,8 +19,18 @@ export default class MyDocument extends Document {
                     <link
                         rel="stylesheet"
                         type="text/css"
+                        href="/static/access/ReactToastify.min.css"
+                    />
+                    <link
+                        rel="stylesheet"
+                        type="text/css"
                         href="/static/access/main.css"
                     />
+                    {/* <link
+                        rel="stylesheet"
+                        type="text/css"
+                        href="/static/access/bootstrap.min.css"
+                    /> */}
                     <link rel="shortcut icon" href="/static/image/favicon.png"></link>
                 </Head>
                 <body>

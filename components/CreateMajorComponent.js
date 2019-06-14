@@ -27,53 +27,51 @@ const formItemLayout = {
     },
 };
 
+const spanCol = {
+    span: 24,
+    md: 24,
+    lg: 12
+}
+
 const CreateMajorComponent = (props) => {
     const { getFieldDecorator } = props.form;
+    const { span, md, lg } = spanCol;
     return (
         <Fragment>
             <HeaderContent title="Create new major" />
             <div className="padding-table">
                 <Form  {...formItemLayout} onSubmit={() => createMajor(event, props)}>
                     <Row>
-                        <Col span={24} md={24} lg={12}>
+                        <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Tên ngành" hasFeedback>
                                 {getFieldDecorator('name', {
                                     rules: [
-                                        {
-                                            required: true,
-                                            message: "Major name is required !"
-                                        }
+                                        { required: true, message: "Major name is required !" }
                                     ]
                                 })(<Input />)}
                             </Form.Item>
                         </Col>
-                        <Col span={24} md={24} lg={12}>
+                        <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Mã ngành" hasFeedback>
                                 {getFieldDecorator('password', {
                                     rules: [
-                                        {
-                                            required: true,
-                                            message: 'Please input your password!',
-                                        }
+                                        { required: true, message: 'Please input your password!', }
                                     ],
                                 })(<Input />)}
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={24} md={24} lg={12}>
+                        <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Tổ hợp môn" hasFeedback>
                                 {getFieldDecorator('gourp-major', {
                                     rules: [
-                                        {
-                                            required: true,
-                                            message: "Major name is required !"
-                                        }
+                                        { required: true, message: "Major name is required !" }
                                     ]
                                 })(<Input />)}
                             </Form.Item>
                         </Col>
-                        <Col span={24} md={24} lg={12}>
+                        <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Active">
                                 {getFieldDecorator('active', {
                                     valuePropName: 'checked',
