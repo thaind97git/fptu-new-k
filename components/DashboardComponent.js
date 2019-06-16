@@ -11,6 +11,7 @@ const DashboardComponent = ({ }) => {
         <Fragment>
             <div className="padding-table">
                 Dashboard Component
+                <div>{process.env.NODE_ENV}</div>
                 <ButtonLayout onClick={() => DialogLayout('success', 'Success', 'completed !')} text="Success" type="success" />
                 <ButtonLayout onClick={() => ConfirmLayout({})} text="Primary" type="primary" />
                 <ButtonLayout onClick={() => DialogLayout('error', 'Error', 'something wrong !')} text="Danger" type="danger" />

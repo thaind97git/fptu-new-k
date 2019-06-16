@@ -24,17 +24,17 @@ export const checkHOC = () => dispatch => {
     //     //     })
 
     // }
-    axios.post(URL_USER.CHECK_LOGIN)
-        .then(rs => {
-            const resp = rs.data;
-            console.log(resp)
-            // !Utils.isEmptyObject(resp.data) ? 
-            //     dispatch(login_success()) : dispatch(login_fail())
-                dispatch(login_success())
-        })
-        .catch(err => {
-            dispatch(login_fail())
-        })
+    dispatch(login_success())
+    // axios.post(URL_USER.CHECK_LOGIN)
+    //     .then(rs => {
+    //         const resp = rs.data;
+    //         console.log(resp)
+    //         // !Utils.isEmptyObject(resp.data) ? 
+    //         //     dispatch(login_success()) : dispatch(login_fail())
+    //     })
+    //     .catch(err => {
+    //         dispatch(login_fail())
+    //     })
 }
 export const checkLogin = () => dispatch => {
     // const token = storageConfig.getToken();
