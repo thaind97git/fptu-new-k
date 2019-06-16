@@ -4,15 +4,15 @@ import ButtonLayout from './ButtonLayout';
 import DialogLayout from './DialogLayout';
 
 const ModelAsycnLayout = ({
-    cancelModelText = "Cancel",
-    okModelText = "Ok",
-    children,
-    titleModel = "Title model default",
-    PromiseCallAPI,
-    titleButton,
-    typeButton,
-    sizeButton,
-    isDisplayDialog = true,
+    cancelModelText = "Cancel", // text Button cancel of Model
+    okModelText = "Ok", // text Button Ok of Model
+    children, // content of Model
+    titleModel = "Title model default", // title of Model
+    PromiseCallAPI, 
+    titleButton, // title Button before open Model
+    typeButton, // type Button before open Model
+    sizeButton, // size Button before open Model
+    isDisplayDialog = true, // is Display dialog when execute PromiseCallAPI
     titleSuccessDialog,
     contentSuccessDialog,
     titleErrorDialog,

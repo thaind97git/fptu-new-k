@@ -1,9 +1,11 @@
 import React, { Component, Fragment, useState, useEffect } from 'react';
+import axios from 'axios';
 import TableComponent from '../components/TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
 import { Pagination } from 'antd';
 import HeaderContent from '../components/HeaderContent';
+import { URL_USER } from '../constant/UrlApi';
 const columns = [
     {
         title: 'No.',
@@ -11,15 +13,12 @@ const columns = [
     },
     {
         title: 'Name',
-        dataIndex: 'name',
-        sorter: true,
-        render: name => `${name.first} ${name.last}`,
+        dataIndex: 'username',
         width: '20%',
     },
     {
-        title: 'Gender',
-        dataIndex: 'gender',
-        filters: [{ text: 'Male', value: 'male' }, { text: 'Female', value: 'female' }],
+        title: 'Roles',
+        dataIndex: '_roles',
         width: '20%',
     },
     {
@@ -33,8 +32,10 @@ const columns = [
             <ButtonLayout size="small" value={id} type="success" text="View" />
             <ButtonLayout size="small" value={id} type="primary" text="Edit" />
             <ButtonLayout
-                onClick={() => ConfirmLayout({title: 'Delete', content: 'Do you want delete this record ?', 
-                 okText: 'Delete', cancelText: 'No'})}
+                onClick={() => ConfirmLayout({
+                    title: 'Delete', content: 'Do you want delete this record ?',
+                    okText: 'Delete', cancelText: 'No'
+                })}
                 size="small"
                 value={id}
                 type="danger"
@@ -147,13 +148,9 @@ const data = [
     }
 ]
 
-const pagination = {
-    total: data.length,
-    defaultCurrent: 1
-}
 
-function Get(page, pageSize) {
-    console.log(page)
+function Get(pageIndex, pageSize) {
+    console.log(pageIndex)
     console.log(pageSize)
 }
 
@@ -162,22 +159,54 @@ data.map(item => {
     currentNo++;
     item.key = currentNo;
 })
-const UserComponent = ({ }) => {
 
-    const pageSize = 10;
-    const [isLoading, setIsLoading] = useState(false);
-    useEffect(() => {
-    }, [])
+const fetchData = async (pageSize, pageIndex) => {
+    // return await axios.get(URL_USER.ALL_USER, { pageSize: pageSize, pageIndex: pageIndex })
+}
 
-    return (
-        <Fragment>
-            <HeaderContent isSearch={true} title="Danh sách account" />
-            <div className="padding-table">
-                <TableComponent columns={columns} isLoading={isLoading} data={data} rowKey={record => record.id} />
-                <br />
-                <Pagination onChange={Get} defaultCurrent={1} total={data.length} />
-            </div>
-        </Fragment>
-    )
+class UserComponent extends Component {
+
+    state = {
+        data: [],
+        pageSize: 10,
+        pageIndex: 0,
+        isLoading: false
+    }
+
+    componentWillMount() {
+        const { pageSize, pageIndex } = this.state;
+        // fetchData(pageSize, pageIndex).then(rs => this.setState({ data: rs.data.data }))
+        // axios.get(URL_USER.ALL_USER, { pageSize: pageSize, pageIndex: pageIndex }).then(rs => this.setState({ data: rs.data.data }))
+    }
+
+    changePage = (pageIndex, pageSize) => {
+        this.setState({
+            pageSize: pageSize,
+            pageIndex: pageIndex
+        })
+    }
+    render() {
+        const { isLoading, data, pageSize } = this.state
+        const pagination = {
+            total: 12,
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            onChange: this.changePage
+        }
+
+        return (
+            <Fragment>
+                <HeaderContent isSearch={true} title="Danh sách account" />
+                <div className="padding-table">
+                    <TableComponent
+                        columns={columns}
+                        isLoading={isLoading}
+                        data={data}
+                        rowKey={record => record._id}
+                        pagination={pagination} />
+                </div>
+            </Fragment>
+        )
+    }
 }
 export default UserComponent;

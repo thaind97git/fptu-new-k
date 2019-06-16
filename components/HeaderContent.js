@@ -1,9 +1,5 @@
 import { Row, Col } from 'antd';
 import SearchLayout from '../layouts/SearchLayout'
-import InputLayout from '../layouts/InputLayout';
-import ButtonLayout from '../layouts/ButtonLayout';
-
-
 const HeaderContent = ({ title, isSearch }) => {
     return (
         <div className="card">
@@ -15,12 +11,7 @@ const HeaderContent = ({ title, isSearch }) => {
                     isSearch && (
                         <Col span={24} lg={14}>
                             <Row>
-                                <Col span={18}>
-                                    <InputLayout placeholder="Input search" />
-                                </Col>
-                                <Col span={6}>
-                                    <ButtonLayout text="Search" type="primary" size="middle" />
-                                </Col>
+                                <SearchLayout />
                             </Row>
                         </Col>
                     )

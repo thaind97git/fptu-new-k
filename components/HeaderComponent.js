@@ -1,13 +1,23 @@
 import React, { Fragment, useEffect, useState } from 'react';
+import axios from 'axios';
 import { Layout, Avatar, Row, Col, Menu, Dropdown, Icon } from 'antd';
 import Router from 'next/router';
 import * as storageConfig from '../config/storageConfig';
 const { Header } = Layout;
+import { URL_USER } from '../constant/UrlApi';
 
 
-const logout = () => {
-    storageConfig.removeToken();
-    Router.push("/login");
+const logout = async () => {
+    axios.post(URL_USER.LOGOUT)
+        .then(rs => {
+            if (rs.status === 200) {
+                Router.push("/login");
+            }
+        })
+        .catch(err => {
+
+        })
+    // storageConfig.removeToken();
 }
 
 

@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import InputLayout from './InputLayout';
-import ButtonLayout from './ButtonLayout';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 
 const SearchLayout = ({}) => {
     return (
@@ -11,7 +10,7 @@ const SearchLayout = ({}) => {
                     <InputLayout placeholder="Input search" />
                 </Col>
                 <Col span={6}>
-                    <ButtonLayout text="Search" type="primary" size="big" />
+                    <Button icon="search" type="primary"> Search </Button>
                 </Col>
             </Row>
     </Fragment>

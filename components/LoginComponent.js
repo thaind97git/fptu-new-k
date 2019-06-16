@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, Icon, Input, Button, Row, Col } from 'antd';
-import Router from 'next/router';
 import { URL_USER } from '../constant/UrlApi';
 import * as storageConfig from '../config/storageConfig';
 import * as toast from '../libs/Toast';
+import * as Utils from '../utils/utils';
 
 const styleForm = {
     backgroundColor: '#f5f5f5',
@@ -13,23 +13,34 @@ const styleForm = {
 }
 
 class LoginComponent extends Component {
+    state = {
+        loadingButton: false
+    }
+    setLoadingButton = (bool) => {
+        this.setState({ loadingButton: bool })
+    }
     handleSubmit = e => {
         e.preventDefault();
-        this.props.form.validateFields(async (err, values) => {
+        this.setState({loadingButton: true})
+        this.props.form.validateFields((err, values) => {
             if (!err) {
-                axios.post(URL_USER.CHECK_LOGIN, { username: values.username, password: values.password })
-                    .then(rs => {
-                        if (rs.data.status === 200) {
-                            storageConfig.setToken(rs.data.data.token);
-                            storageConfig.setUsername(rs.data.data.username);
-                            Router.replace({
-                                pathname: "/dashboard"
-                            })
-                        } else {
-                            toast.errorToast('Login fail !')
-                        }
+                axios.post(URL_USER.LOGIN, { phone: values.phone, password: values.password })
+                .then(rs => {
+                    this.setLoadingButton(false);
+                    const resp = rs.data;
+                    console.log(resp)
+                    if (!Utils.isEmptyObject(resp.data)) {
+                        storageConfig.setUsername(resp.data.username);
+                        Utils.redirectURL("/dashboard");
+                    }
                     }).catch(err => {
-                        toast.errorToast('Some thing wrong !')
+                        this.setLoadingButton(false)
+                        if (!!err.response) {
+                            const respError = err.response.data;
+                            toast.errorToast( respError && respError.errorMessage)
+                        } else {
+                            toast.warnToast('Lỗi không xác định')
+                        }
                     })
             }
         });
@@ -37,6 +48,7 @@ class LoginComponent extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { loadingButton } = this.state;
         return (
             <Row type="flex" align="middle" justify="center"
                 style={{
@@ -50,12 +62,12 @@ class LoginComponent extends Component {
                     <h1 className="align-center"> Admin site FPTU New K</h1>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
-                            {getFieldDecorator('username', {
+                            {getFieldDecorator('phone', {
                                 rules: [{ required: true, message: 'Please input your username!' }],
                             })(
                                 <Input
                                     prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="Username"
+                                    placeholder="Phone"
                                 />,
                             )}
                         </Form.Item>
@@ -72,7 +84,7 @@ class LoginComponent extends Component {
                         </Form.Item>
                         <Form.Item>
                             <Row type="flex" align="middle" justify="center">
-                                <Button type="primary" htmlType="submit" className="login-form-button">
+                                <Button loading={loadingButton} type="primary" htmlType="submit" className="login-form-button">
                                     Log in
                                 </Button>
                             </Row>

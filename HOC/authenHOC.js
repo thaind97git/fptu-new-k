@@ -20,8 +20,8 @@ function Authen(AuthComponent) {
               : {};
           };
         componentDidMount() {
-            const { checkAuthen } = this.props.userAction;
-            checkAuthen()
+            const { checkHOC } = this.props.userAction;
+            checkHOC()
         }
         render() {
             const { isLoggedIn } = this.props;
