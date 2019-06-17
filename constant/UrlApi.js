@@ -1,14 +1,14 @@
 const HTTP = "https://";
 const PORT = "";
 // const SERVER_IP = "192.168.2.105:8000";
-const SERVER_IP = "tuyensinhfpt.herokuapp.com";
+const SERVER_IP = "asignment.azurewebsites.net";
 const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;
 
 const CHECK_LOGIN = SERVER_PATH + "/check_login"
 const LOGIN = SERVER_PATH + "/user/sign_in";
-const LOGOUT = SERVER_PATH + "/logout";
+const LOGOUT = SERVER_PATH + "/signout";
 /*============USER================*/
 const ALL_USER = SERVER_PATH + "/user/users";
 const CREATE_USER = SERVER_PATH + "/user/create";

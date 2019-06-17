@@ -3,21 +3,25 @@ import axios from 'axios';
 import { Layout, Avatar, Row, Col, Menu, Dropdown, Icon } from 'antd';
 import Router from 'next/router';
 import * as storageConfig from '../config/storageConfig';
+import * as toast from '../libs/Toast';
 const { Header } = Layout;
 import { URL_USER } from '../constant/UrlApi';
 
 
 const logout = async () => {
-    axios.post(URL_USER.LOGOUT)
+    axios.get(URL_USER.LOGOUT)
         .then(rs => {
-            if (rs.status === 200) {
+            const resp = rs.data;
+            if (resp.status === 200) {
+                storageConfig.removeUsername();
                 Router.push("/login");
+            } else {
+                toast.errorToast('Có lỗi không xác định !')
             }
         })
         .catch(err => {
-
+            toast.errorToast('Có lỗi không xác định !')
         })
-    // storageConfig.removeToken();
 }
 
 
@@ -57,7 +61,7 @@ const HeaderComponent = ({ title }) => {
                     </Col>
                     <Col span={1}>
                         <Dropdown overlay={menu(username)} placement="bottomRight">
-                            <Avatar size="default" icon="user" />
+                            <Avatar style={{cursor: 'pointer'}} size="default" icon="user" />
                         </Dropdown>
                     </Col>
                 </Row>

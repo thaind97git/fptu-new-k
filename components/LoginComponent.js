@@ -28,7 +28,6 @@ class LoginComponent extends Component {
                 .then(rs => {
                     this.setLoadingButton(false);
                     const resp = rs.data;
-                    console.log(resp)
                     if (!Utils.isEmptyObject(resp.data)) {
                         storageConfig.setUsername(resp.data.username);
                         Utils.redirectURL("/dashboard");
@@ -39,7 +38,7 @@ class LoginComponent extends Component {
                             const respError = err.response.data;
                             toast.errorToast( respError && respError.errorMessage)
                         } else {
-                            toast.warnToast('Lỗi không xác định')
+                            toast.warnToast('Có lỗi không xác định !')
                         }
                     })
             }

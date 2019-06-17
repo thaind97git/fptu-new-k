@@ -56,6 +56,10 @@ export const setUsername = (username) => {
     return localStorage.setItem(__username, username)
 }
 
+export const removeUsername = () => {
+    return localStorage.removeItem(__username)
+}
+
 export const getUsername = () => {
     return localStorage.getItem(__username)
 }
