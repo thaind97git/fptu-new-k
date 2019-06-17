@@ -1,7 +1,7 @@
-const HTTP = "http://";
+const HTTP = "https://";
 const PORT = "";
 // const SERVER_IP = "192.168.2.105:8000";
-const SERVER_IP = "asignment.azurewebsites.net";
+const SERVER_IP = "tuyensinhfpt.herokuapp.com";
 const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;

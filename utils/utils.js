@@ -5,5 +5,5 @@ export function isEmptyObject(obj) {
 }
 
 export function redirectURL(url, option) {
-    return Router.replace(url, '', option)
+    return Router.replace(url)
 }
