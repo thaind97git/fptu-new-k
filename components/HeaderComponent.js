@@ -9,6 +9,7 @@ import * as storageConfig from '../config/storageConfig';
 const { Header } = Layout;
 import { URL_USER } from '../constant/UrlApi';
 import { TOAST_ERROR } from '../utils/actions';
+import { Z_INDEX_HEADER } from '../constant/constants';
 
 const connectToRedux = connect(pick(['isOpenMenu']), dispatch => ({
     displayNotify: (type, message) => {
@@ -69,7 +70,9 @@ const HeaderComponent = ({
             <Header style={{
                 background: '#6288e7',
                 boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)',
-                position: 'fixed', zIndex: 1, width: '100%', right: 0
+                position: 'fixed', 
+                zIndex: Z_INDEX_HEADER, 
+                width: '100%', 
             }}>
                 <Row>
                     <Col span={23}>
@@ -79,7 +82,7 @@ const HeaderComponent = ({
                                     isCollepse && <Icon
                                         onClick={() => toggleMenu(!isOpenMenu)}
                                         style={{ color: 'white', fontSize: 16, cursor: 'pointer' }}
-                                        type="menu" />
+                                        type={isOpenMenu ? "menu" : "close"} />
                                 }
                             </Col>
                             <Col xs={21} sm={22} lg={23}>

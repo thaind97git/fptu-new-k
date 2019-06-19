@@ -1,12 +1,12 @@
 import { Fragment } from "react";
 import { Layout } from 'antd';
-import HeaderComponent from "../components/HeaderComponent";
+import { Z_INDEX_CONTENT } from '../constant/constants';
 const { Content, Footer } = Layout;
 const AdminContentPageLayout = ({ marginLeft, children }) => {
     return (
         <Fragment>
-            <HeaderComponent isCollepse={true} title="FPT University New K" />
-            <Layout style={{ marginLeft: marginLeft, minHeight: '100vh' }}>
+            
+            <Layout style={{ marginLeft: marginLeft, minHeight: '100vh', zIndex: Z_INDEX_CONTENT }}>
                 <Content style={{ margin: '24px 16px 0', marginTop: 80 }}>
                     <div className="admin-content">
                         {children}

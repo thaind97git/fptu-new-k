@@ -2,6 +2,7 @@ import React from 'react';
 import NProgress from 'nprogress';
 import Router from "next/router";
 import PropTypes from 'prop-types';
+import { Z_INDEX_PROGRESS } from '../constant/constants';
 
 /* eslint-disable react/prefer-stateless-function */
 class NextNProgress extends React.Component {
@@ -37,7 +38,7 @@ class NextNProgress extends React.Component {
       #nprogress .bar {
         background: ${color};
         position: fixed;
-        z-index: 9999;
+        z-index: ${Z_INDEX_PROGRESS};
         top: 0;
         left: 0;
         width: 100%;

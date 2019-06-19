@@ -6,11 +6,13 @@ import MediaQuery from 'react-responsive';
 import SiderLayout from './SiderLayout';
 import { WIDTH_MENU, RESPONSIVE_MENU } from '../constant/constants';
 import AdminContentPageLayout from './AdminContentPageLayout';
+import HeaderComponent from '../components/HeaderComponent';
 const connectToRedux = connect(pick(['isOpenMenu']))
 const AdminPageLayout = ({ children, isOpenMenu }) => {
     let marginLeft = isOpenMenu ? 0 : WIDTH_MENU;
     return (
         <Layout >
+            <HeaderComponent isCollepse={true} title="FPT University New K" />
             <SiderLayout />
             <MediaQuery minWidth={RESPONSIVE_MENU}>
                 <AdminContentPageLayout marginLeft={marginLeft} >

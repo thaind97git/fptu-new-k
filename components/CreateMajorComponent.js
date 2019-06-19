@@ -15,14 +15,14 @@ const createMajor = (e, props) => {
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
-        md: { span: 6 },
+        sm: { span: 6 },
+        md: { span: 4 },
         lg: { span: 6 }
     },
     wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
-        md: { span: 18 },
+        sm: { span: 18 },
+        md: { span: 20 },
         lg: { span: 18 }
     },
 };

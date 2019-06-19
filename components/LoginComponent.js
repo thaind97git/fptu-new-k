@@ -6,6 +6,7 @@ import { URL_USER } from '../constant/UrlApi';
 import { TOAST_ERROR, TOAST_WARN } from '../utils/actions';
 import * as storageConfig from '../config/storageConfig';
 import * as Utils from '../utils/utils';
+import { Z_INDEX_LOGIN } from '../constant/constants';
 
 const styleForm = {
     backgroundColor: '#f5f5f5',
@@ -52,7 +53,7 @@ const LoginComponent = ({ form, displayNotify }) => {
                 height: '100vh',
                 background: 'url(/static/image/bg2.jpeg) no-repeat',
                 backgroundSize: 'cover',
-                zIndex: 1030
+                zIndex: Z_INDEX_LOGIN
             }}
         >
             <Col xs={20} sm={12} md={12} lg={8} style={styleForm}>
