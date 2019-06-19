@@ -6,10 +6,10 @@ const SearchLayout = ({}) => {
     return (
         <Fragment>
             <Row>
-                <Col span={18}>
+                <Col span={24} md={18} lg={18}>
                     <InputLayout placeholder="Input search" />
                 </Col>
-                <Col span={6}>
+                <Col span={24} md={6} lg={6} style={{paddingTop: 10}}>
                     <Button icon="search" type="primary"> Search </Button>
                 </Col>
             </Row>

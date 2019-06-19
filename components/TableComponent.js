@@ -5,6 +5,7 @@ const Tablecomponent = ({ columns, data, handleTableChange, isLoading, paginatio
     return (
         <Fragment>
             <Table
+                style={{overflowX: 'auto'}}
                 columns={columns}
                 rowKey={rowKey}
                 dataSource={data}

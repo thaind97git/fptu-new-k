@@ -54,6 +54,10 @@ export default {
             Router.push('/login')
             return false;
         }
+        // if (type === LOGOUT) {
+        //     axios.get(URL_USER.LOGOUT)
+        //     return false;
+        // }
         return state;
     }
 }

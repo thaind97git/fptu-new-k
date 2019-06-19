@@ -1,31 +1,41 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { pick } from 'lodash/fp';
+import { TOGGLE_MENU } from '../store/MenuState';
 import { Layout, Avatar, Row, Col, Menu, Dropdown, Icon } from 'antd';
 import Router from 'next/router';
 import * as storageConfig from '../config/storageConfig';
-import * as toast from '../libs/Toast';
 const { Header } = Layout;
 import { URL_USER } from '../constant/UrlApi';
+import { TOAST_ERROR } from '../utils/actions';
 
+const connectToRedux = connect(pick(['isOpenMenu']), dispatch => ({
+    displayNotify: (type, message) => {
+        dispatch({ type: type, payload: { message: message, options: {} } })
+    },
+    toggleMenu: bool => {
+        dispatch({ type: TOGGLE_MENU, payload: { toggleMenu: bool } })
+    }
+}));
 
-const logout = async () => {
+const logout = (displayNotify) => {
     axios.get(URL_USER.LOGOUT)
-        .then(rs => {
-            const resp = rs.data;
-            if (resp.status === 200) {
+        .then(({ data }) => {
+            if (data.status === 200) {
                 storageConfig.removeUsername();
                 Router.push("/login");
             } else {
-                toast.errorToast('Có lỗi không xác định !')
+                displayNotify(TOAST_ERROR, 'Có lỗi không xác định !')
             }
         })
         .catch(err => {
-            toast.errorToast('Có lỗi không xác định !')
+            displayNotify(TOAST_ERROR, 'Có lỗi không xác định !')
         })
 }
 
 
-const menu = (username) => {
+const menu = (username, displayNotify) => {
     return (
         <Menu>
             <Menu.Item>
@@ -34,7 +44,7 @@ const menu = (username) => {
                 </a>
             </Menu.Item>
             <Menu.Item>
-                <a onClick={logout} target="_blank" rel="noopener noreferrer">
+                <a onClick={() => logout(displayNotify)} target="_blank" rel="noopener noreferrer">
                     <Icon type="logout" />   Logout, {username}
                 </a>
             </Menu.Item>
@@ -43,7 +53,13 @@ const menu = (username) => {
 }
 
 
-const HeaderComponent = ({ title }) => {
+const HeaderComponent = ({
+    title,
+    displayNotify,
+    isCollepse,
+    toggleMenu,
+    isOpenMenu
+}) => {
     const [username, setUsername] = useState("");
     useEffect(() => {
         setUsername(storageConfig.getUsername())
@@ -57,11 +73,23 @@ const HeaderComponent = ({ title }) => {
             }}>
                 <Row>
                     <Col span={23}>
-                        <h2 className="title">{title}</h2>
+                        <Row>
+                            <Col xs={3} sm={2} lg={1}>
+                                {
+                                    isCollepse && <Icon
+                                        onClick={() => toggleMenu(!isOpenMenu)}
+                                        style={{ color: 'white', fontSize: 16, cursor: 'pointer' }}
+                                        type="menu" />
+                                }
+                            </Col>
+                            <Col xs={21} sm={22} lg={23}>
+                                <h3 className="title">{title}</h3>
+                            </Col>
+                        </Row>
                     </Col>
                     <Col span={1}>
-                        <Dropdown overlay={menu(username)} placement="bottomRight">
-                            <Avatar style={{cursor: 'pointer'}} size="default" icon="user" />
+                        <Dropdown overlay={menu(username, displayNotify)} placement="bottomRight">
+                            <Avatar style={{ cursor: 'pointer' }} size="default" icon="user" />
                         </Dropdown>
                     </Col>
                 </Row>
@@ -74,4 +102,4 @@ const HeaderComponent = ({ title }) => {
         </Fragment>
     )
 }
-export default HeaderComponent;
+export default connectToRedux(HeaderComponent);
