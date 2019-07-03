@@ -1,21 +1,67 @@
+import { Fragment } from 'react';
+import { connect } from 'react-redux';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ModelAsycnLayout from '../layouts/ModelAsycnLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
-import DialogLayout from '../layouts/DialogLayout';
-import { Fragment } from 'react';
 import axios from 'axios';
 import { URL_USER } from '../constant/UrlApi';
+import { 
+    TOAST_SUCCESS, 
+    TOAST_ERROR, 
+    TOAST_WARN, 
+    TOAST_DEFAULT, 
+    DIALOG_SUCCESS, 
+    DIALOG_ERROR, 
+    DIALOG_INFO 
+} from '../utils/actions';
 
-const DashboardComponent = ({ }) => {
+const connectToRedux = connect(null, dispatch => ({
+    displayNotify: (type, message) => {
+        dispatch({ type: type, payload: { message: message }})
+    },
+    displayDialog: (type, title, content) => {
+        dispatch({ type: type, payload: { title: title, content: content } })
+    }
+}))
+
+const DashboardComponent = ({ displayNotify, displayDialog }) => {
     return (
         <Fragment>
             <div className="padding-table">
                 Dashboard Component
                 <div>{process.env.NODE_ENV}</div>
-                <ButtonLayout onClick={() => DialogLayout('success', 'Success', 'completed !')} text="Success" type="success" />
-                <ButtonLayout onClick={() => ConfirmLayout({})} text="Primary" type="primary" />
-                <ButtonLayout onClick={() => DialogLayout('error', 'Error', 'something wrong !')} text="Danger" type="danger" />
-                <ButtonLayout text="Default" type="default" />
+                <ButtonLayout 
+                    onClick={() => displayDialog(DIALOG_SUCCESS, 'Success')} 
+                    text="Success" 
+                    type="success" />
+                <ButtonLayout 
+                    onClick={() => ConfirmLayout({})} 
+                    text="Primary" 
+                    type="primary" />
+                <ButtonLayout 
+                    onClick={() => displayDialog(DIALOG_ERROR, 'Error')} 
+                    text="Danger" 
+                    type="danger" />
+                <ButtonLayout 
+                    onClick={() => displayDialog(DIALOG_INFO, 'Infor')}
+                    text="Default" 
+                    type="default" />
+                <ButtonLayout 
+                    text="Toast Success" 
+                    type="success" 
+                    onClick={() => displayNotify(TOAST_SUCCESS, 'Toast notifycation success')} />
+                <ButtonLayout 
+                    text="Toast Error" 
+                    type="danger" 
+                    onClick={() => displayNotify(TOAST_ERROR, 'Toast notifycation error')} />
+                <ButtonLayout 
+                    text="Toast Warning" 
+                    type="danger" 
+                    onClick={() => displayNotify(TOAST_WARN, 'Toast notifycation warning')} />
+                <ButtonLayout 
+                    text="Toast Default" 
+                    type="default" 
+                    onClick={() => displayNotify(TOAST_DEFAULT, 'Toast notifycation default')} />
 
                 {/* <ModelAsycnLayout
                     titleModel={<h3>Here is model example about asycn</h3>}
@@ -37,4 +83,4 @@ const DashboardComponent = ({ }) => {
     )
 }
 
-export default DashboardComponent;
+export default connectToRedux(DashboardComponent);

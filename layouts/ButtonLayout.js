@@ -2,7 +2,17 @@ import { Fragment } from "react";
 
 const arraySize = ["middle", "small", "big"]
 
-const ButtonLayout = ({ text, type = 'default', onClick, onChange, value, className = "", size = "middle", typeButton }) => {
+const ButtonLayout = ({ 
+    text, 
+    type = 'default', 
+    onClick, 
+    onChange, 
+    value, 
+    className = "", 
+    size = "middle", 
+    typeButton,
+    isDisabled
+}) => {
     const sizeClass = arraySize.find(e => e == size) ? arraySize.find(e => e == size) : ""
     return (
         <Fragment>
@@ -11,7 +21,8 @@ const ButtonLayout = ({ text, type = 'default', onClick, onChange, value, classN
                 onClick={onClick} 
                 onChange={onChange} 
                 value={value}
-                type={typeButton}>
+                type={typeButton}
+                disabled={isDisabled}>
                 {text}
             </button>
             <style jsx>{`
@@ -48,12 +59,23 @@ const ButtonLayout = ({ text, type = 'default', onClick, onChange, value, classN
                     color: black;
                     border: 1px solid gray
                 }
+                .outline-success {
+                    border: 1px solid #4caf50;
+                    background-color: transparent;
+                    color: #4caf50;
+                }
+                .outline-danger {
+                    border: 1px solid #f44336;
+                    background-color: transparent;
+                    color: #f44336;
+                }
+
                 .success,.primary,.danger,.default:hover {
                     cursor: pointer;
                 }
 
 
-                .btn:hover {
+                .btn.success:hover, .btn.primary:hover, .btn.danger:hover, .btn.default:hover {
                     transition: all 0.3s ease;
                     box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
                     opacity: 0.9

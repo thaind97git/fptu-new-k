@@ -10,7 +10,7 @@ class NextNProgress extends React.Component {
     color: 'rgb(243, 101, 35)',
     startPosition: 0.3,
     stopDelayMs: 200,
-    height: 1.5,
+    height: 1,
   };
 
   timer = null;

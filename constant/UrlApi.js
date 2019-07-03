@@ -1,7 +1,9 @@
-const HTTP = "https://";
-const PORT = "";
+const HTTP = "http://";
+const PORT = ":3000";
 // const SERVER_IP = "192.168.2.105:8000";
-const SERVER_IP = "asignment.azurewebsites.net";
+// 172.20.10.11
+// localhost
+const SERVER_IP = "localhost";
 const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;
@@ -14,6 +16,9 @@ const ALL_USER = SERVER_PATH + "/user/users";
 const CREATE_USER = SERVER_PATH + "/user/create";
 const UPDATE_USER = SERVER_PATH + "/user/update/:username";
 const DELETE_USER = SERVER_PATH + "/user/delete/:username";
+/*============MAJOR================*/
+const GET_MAJOR = SERVER_PATH + "/majors";
+const CREATE_MAJOR = SERVER_PATH + "/majors";
 
 
 module.exports.URL_SERVER = {
@@ -28,6 +33,11 @@ module.exports.URL_USER = {
     LOGIN,
     LOGOUT
 };
+
+module.exports.URL_MAJOR = {
+    GET_MAJOR,
+    CREATE_MAJOR
+}
 
 
 

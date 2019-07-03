@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Modal } from 'antd';
 import ButtonLayout from './ButtonLayout';
-import DialogLayout from './DialogLayout';
+import { DIALOG_SUCCESS, DIALOG_ERROR } from '../utils/actions';
 
+const connectToRedux = connect(null, dispatch => ({
+    displayDialog: (type, title, content) => {
+        dispatch({ type: type, payload: { title: title, content: content } })
+    }
+}))
 const ModelAsycnLayout = ({
     cancelModelText = "Cancel", // text Button cancel of Model
     okModelText = "Ok", // text Button Ok of Model
@@ -16,7 +22,8 @@ const ModelAsycnLayout = ({
     titleSuccessDialog,
     contentSuccessDialog,
     titleErrorDialog,
-    contentErrorDialog
+    contentErrorDialog,
+    displayDialog
 }) => {
     const [visible, setVisible] = useState(false); // Open model
     const [confirmLoading, setConfirmLoading] = useState(false)
@@ -25,11 +32,11 @@ const ModelAsycnLayout = ({
         PromiseCallAPI.then((rs) => {
             setVisible(false)
             setConfirmLoading(false)
-            isDisplayDialog && DialogLayout('success', titleSuccessDialog, contentSuccessDialog)
+            isDisplayDialog && displayDialog(DIALOG_SUCCESS, titleSuccessDialog, contentSuccessDialog)
         }, err => {
             setVisible(false)
             setConfirmLoading(false)
-            isDisplayDialog && DialogLayout('error', titleErrorDialog, contentErrorDialog)
+            isDisplayDialog && displayDialog(DIALOG_ERROR, titleErrorDialog, contentErrorDialog)
         })
     };
 
@@ -57,4 +64,4 @@ const ModelAsycnLayout = ({
     );
 }
 
-export default ModelAsycnLayout;
+export default connectToRedux(ModelAsycnLayout);

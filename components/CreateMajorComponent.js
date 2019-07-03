@@ -1,17 +1,20 @@
+import { Fragment, useState } from 'react';
+import axios from 'axios';
+import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Checkbox } from 'antd';
 import HeaderContent from '../components/HeaderContent';
-import { Fragment } from 'react';
+import { URL_MAJOR } from '../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
 
+const connectToRedux = connect(null, dispatch => ({
+    displayNotify: (type, message) => {
+        dispatch({ type: type, payload: { message: message, options: {} }})
+    },
+    displayDialog: (type, title, content) => {
+        dispatch({ type: type, payload: { title: title, content: content } })
+    }
+}))
 
-const createMajor = (e, props) => {
-    e.preventDefault();
-    props.form.validateFieldsAndScroll((err, values) => {
-        console.log(values)
-        if (!err) {
-            console.log('Received values of form: ', values);
-        }
-    });
-}
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -33,29 +36,61 @@ const spanCol = {
     lg: 12
 }
 
-const CreateMajorComponent = (props) => {
-    const { getFieldDecorator } = props.form;
+const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
+    const { getFieldDecorator } = form;
+    const [loadingButton, setLoadingButton] = useState(false);
     const { span, md, lg } = spanCol;
+    const createMajor = (e) => {
+        e.preventDefault();
+        form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                const { name, majorGroup, majors, majorCode, active } = values;
+                const majorObj = {
+                    ma_nganh: majorCode,
+                    nhom_nganh: majors || '',
+                    name: name || '',
+                    to_hop_mon: majorGroup || '',
+                    creator: 0,
+                    created: new Date().getTime(),
+                    status: 0
+                }
+                setLoadingButton(true);
+                axios.post(URL_MAJOR.CREATE_MAJOR, majorObj)
+                    .then(({data}) => {
+                        setLoadingButton(false)
+                        if (data) {
+                            displayDialog(DIALOG_SUCCESS, data.message)
+                        }
+                        form.resetFields()
+                    }).catch(({response}) => {
+                        setLoadingButton(false)
+                        if (response) {
+                            displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
+                        }
+                    })
+            }
+        });
+    }
     return (
         <Fragment>
             <HeaderContent title="Create new major" />
             <div className="padding-table">
-                <Form  {...formItemLayout} onSubmit={() => createMajor(event, props)}>
+                <Form  {...formItemLayout} onSubmit={() => createMajor(event)}>
                     <Row>
                         <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Tên ngành" hasFeedback>
                                 {getFieldDecorator('name', {
                                     rules: [
-                                        { required: true, message: "Major name is required !" }
+                                        { required: true, message: "Vui lòng nhập tên ngành !" }
                                     ]
                                 })(<Input />)}
                             </Form.Item>
                         </Col>
                         <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Mã ngành" hasFeedback>
-                                {getFieldDecorator('password', {
+                                {getFieldDecorator('majorCode', {
                                     rules: [
-                                        { required: true, message: 'Please input your password!', }
+                                        { required: true, message: 'Vui lòng nhập mã ngành!', }
                                     ],
                                 })(<Input />)}
                             </Form.Item>
@@ -64,13 +99,24 @@ const CreateMajorComponent = (props) => {
                     <Row>
                         <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Tổ hợp môn" hasFeedback>
-                                {getFieldDecorator('gourp-major', {
+                                {getFieldDecorator('majors', {
                                     rules: [
-                                        { required: true, message: "Major name is required !" }
+                                        { required: true, message: "Vui lòng nhập tổ hợp môn !" }
                                     ]
                                 })(<Input />)}
                             </Form.Item>
                         </Col>
+                        <Col span={span} md={md} lg={lg}>
+                            <Form.Item label="Nhóm ngành" hasFeedback>
+                                {getFieldDecorator('majorGroup', {
+                                    rules: [
+                                        { required: true, message: "Vui lòng nhập nhóm ngành !" }
+                                    ]
+                                })(<Input />)}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
                         <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Active">
                                 {getFieldDecorator('active', {
@@ -81,7 +127,7 @@ const CreateMajorComponent = (props) => {
                     </Row>
                     <Row type="flex" align="middle" justify="center">
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" >
+                            <Button loading={loadingButton} type="primary" htmlType="submit" >
                                 Create new major
                         </Button>
                         </Form.Item>
@@ -94,4 +140,4 @@ const CreateMajorComponent = (props) => {
 
 const WrappedCreateMajor = Form.create()(CreateMajorComponent)
 
-export default WrappedCreateMajor;
+export default connectToRedux(WrappedCreateMajor);

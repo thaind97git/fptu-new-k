@@ -21,7 +21,12 @@ const connectToRedux = connect(pick(['isOpenMenu']), dispatch => ({
 }));
 
 const logout = (displayNotify) => {
-    axios.get(URL_USER.LOGOUT)
+    const optionLogout = {
+        method: "GET",
+        data: {},
+        withCredentials: true
+    }
+    axios(URL_USER.LOGOUT, optionLogout)
         .then(({ data }) => {
             if (data.status === 200) {
                 storageConfig.removeUsername();

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Router from 'next/router';
 import MenuComponent from '../components/MenuComponent';
+import * as Utils from '../utils/utils';
 
 class NavComponent extends Component {
     render() {
-        const path = Router.route
+        const path = Utils.currentUrl();
         return (
             <MenuComponent 
                 path={path}   

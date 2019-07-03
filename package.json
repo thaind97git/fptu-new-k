@@ -1,7 +1,7 @@
 {
   "name": "fptu-newk",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3001",
     "build": "next build",
     "start": "NODE_ENV=production next start -p $PORT",
     "heroku-postbuild": "npm run build",
@@ -22,6 +22,8 @@
     "react-responsive": "^7.0.0",
     "react-toastify": "^5.2.1",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-api-call": "^1.0.9",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0"
   }
 }

@@ -5,3 +5,6 @@ export const Z_INDEX_HEADER = 3;
 export const Z_INDEX_SIDER = 2;
 export const Z_INDEX_CONTENT = 1;
 export const Z_INDEX_LOGIN = 9995;
+
+export const PAGE_SIZE = 10
+export const PAGE_INDEX = 1;
