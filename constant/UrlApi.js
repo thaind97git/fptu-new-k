@@ -12,21 +12,22 @@ const CHECK_LOGIN = SERVER_PATH + "/check_login"
 const LOGIN = SERVER_PATH + "/user/sign_in";
 const LOGOUT = SERVER_PATH + "/signout";
 /*============USER================*/
-const ALL_USER = SERVER_PATH + "/user/users";
+const GET_USERS = SERVER_PATH + "/user/users";
 const CREATE_USER = SERVER_PATH + "/user/create";
 const UPDATE_USER = SERVER_PATH + "/user/update/:username";
 const DELETE_USER = SERVER_PATH + "/user/delete/:username";
 /*============MAJOR================*/
 const GET_MAJOR = SERVER_PATH + "/majors";
 const CREATE_MAJOR = SERVER_PATH + "/majors";
-
+const DELETE_MAJOR = SERVER_PATH + "/majors";
+const UPDATE_MAJOR = SERVER_PATH + "/majors";
 
 module.exports.URL_SERVER = {
     SERVER_PORT
 };
 module.exports.URL_USER = {
     CHECK_LOGIN,
-    ALL_USER,
+    GET_USERS,
     CREATE_USER,
     UPDATE_USER,
     DELETE_USER,
@@ -36,7 +37,9 @@ module.exports.URL_USER = {
 
 module.exports.URL_MAJOR = {
     GET_MAJOR,
-    CREATE_MAJOR
+    CREATE_MAJOR,
+    DELETE_MAJOR,
+    UPDATE_MAJOR
 }
 
 

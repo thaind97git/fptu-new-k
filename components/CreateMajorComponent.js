@@ -5,6 +5,8 @@ import { Form, Input, Button, Col, Row, Checkbox } from 'antd';
 import HeaderContent from '../components/HeaderContent';
 import { URL_MAJOR } from '../constant/UrlApi';
 import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
+import { REQUEST_OPTION_DEFAULT } from '../config/options';
+import { requestAPI } from '../config/index';
 
 const connectToRedux = connect(null, dispatch => ({
     displayNotify: (type, message) => {
@@ -55,18 +57,19 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                     status: 0
                 }
                 setLoadingButton(true);
-                axios.post(URL_MAJOR.CREATE_MAJOR, majorObj)
+                const opt = {
+                    url: URL_MAJOR.CREATE_MAJOR,
+                    method: 'POST',
+                    data: majorObj
+                }
+                requestAPI(opt)
                     .then(({data}) => {
                         setLoadingButton(false)
-                        if (data) {
-                            displayDialog(DIALOG_SUCCESS, data.message)
-                        }
+                        data && displayDialog(DIALOG_SUCCESS, data.message)
                         form.resetFields()
                     }).catch(({response}) => {
                         setLoadingButton(false)
-                        if (response) {
-                            displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
-                        }
+                        response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
                     })
             }
         });

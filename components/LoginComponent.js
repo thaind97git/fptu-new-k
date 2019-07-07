@@ -1,12 +1,12 @@
-import React, { Component, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Icon, Input, Button, Row, Col } from 'antd';
 import { URL_USER } from '../constant/UrlApi';
 import { TOAST_ERROR, TOAST_WARN } from '../utils/actions';
+import { Z_INDEX_LOGIN } from '../constant/constants';
+import { requestAPI } from '../config/index';
 import * as storageConfig from '../config/storageConfig';
 import * as Utils from '../utils/utils';
-import { Z_INDEX_LOGIN } from '../constant/constants';
 
 const styleForm = {
     backgroundColor: '#f5f5f5',
@@ -30,12 +30,12 @@ const LoginComponent = ({ form, displayNotify }) => {
         form.validateFields((err, values) => {
             if (!err) {
                 setLoadingButton(true)
-                const optionLogin = {
+                const opt = {
+                    url: URL_USER.LOGIN,
                     method: "POST",
                     data: { username: values.username, password: values.password },
-                    withCredentials: true
                 }
-                axios(URL_USER.LOGIN, optionLogin)
+                requestAPI(opt)
                     .then(({ data }) => {
                         setLoadingButton(false)
                         if (data && data.status === 200 && !Utils.isEmptyObject(data.data)) {

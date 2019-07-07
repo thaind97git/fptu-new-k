@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { connect } from 'react-redux';
 import ButtonLayout from '../layouts/ButtonLayout';
-import ModelAsycnLayout from '../layouts/ModelAsycnLayout';
+import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
 import axios from 'axios';
 import { URL_USER } from '../constant/UrlApi';
