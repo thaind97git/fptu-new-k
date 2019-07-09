@@ -17,6 +17,12 @@ export const menus = [
                 itemLink: '/student',
                 itemIcon: 'unordered-list',
                 itemText: 'List student'
+            },
+            {
+                itemKey: 'sub2.2',
+                itemLink: '/student/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new student'
             }
         ]
     },
@@ -34,9 +40,9 @@ export const menus = [
             },
             {
                 itemKey: 'sub3.2',
-                itemLink: '/admin',
-                itemIcon: 'unordered-list',
-                itemText: 'List admin'
+                itemLink: '/user/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new user'
             }
         ]
     },

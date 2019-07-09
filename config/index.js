@@ -1,8 +1,15 @@
 import axios from 'axios';
 import { REQUEST_OPTION_DEFAULT } from './options';
-export const requestAPI = ({ method = 'GET', url = '', data = {}, headers = {}, responseType = 'json' }) => {
+export const requestAPI = ({ 
+    method = 'GET',
+    url = '',
+    data = {},
+    headers = {},
+    responseType = 'json'
+}) => {
     if (url.length === 0) {
-        throw new Error('URL is require');
+        console.log('URL is require');
+        return
     }
     const opt = {
         method: method,
@@ -12,4 +19,24 @@ export const requestAPI = ({ method = 'GET', url = '', data = {}, headers = {}, 
         responseType: responseType
     }
     return axios(Object.assign(REQUEST_OPTION_DEFAULT, opt))
+}
+
+export const formItemLayout = {
+    labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+        md: { span: 4 },
+        lg: { span: 7 }
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+        md: { span: 20 },
+        lg: { span: 17 }
+    }
+}
+export const spanCol = {
+    span: 24,
+    md: 24,
+    lg: 12
 }

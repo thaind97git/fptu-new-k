@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Icon, Input, Button, Row, Col } from 'antd';
-import { URL_USER } from '../constant/UrlApi';
+import { LOGIN } from '../constant/UrlApi';
 import { TOAST_ERROR, TOAST_WARN } from '../utils/actions';
 import { Z_INDEX_LOGIN } from '../constant/constants';
 import { requestAPI } from '../config/index';
@@ -31,7 +31,7 @@ const LoginComponent = ({ form, displayNotify }) => {
             if (!err) {
                 setLoadingButton(true)
                 const opt = {
-                    url: URL_USER.LOGIN,
+                    url: LOGIN,
                     method: "POST",
                     data: { username: values.username, password: values.password },
                 }

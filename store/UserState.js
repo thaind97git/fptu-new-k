@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Router from 'next/router';
-import { URL_USER } from '../constant/UrlApi';
+import { CHECK_LOGIN } from '../constant/UrlApi';
 import * as Utils from '../utils/utils';
 import { LOGIN_SUCCESS, LOGIN_FAIL } from '../utils/actions';
 
@@ -11,7 +11,7 @@ const optionCheckLogin = {
 }
 
 export const checkHOC = () => dispatch => {
-    axios(URL_USER.CHECK_LOGIN, optionCheckLogin)
+    axios(CHECK_LOGIN, optionCheckLogin)
         .then(({ data }) => {
             if (!Utils.isEmptyObject(data.data)) {
                 dispatch(login_success())

@@ -8,40 +8,27 @@ const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;
 
-const CHECK_LOGIN = SERVER_PATH + "/check_login"
-const LOGIN = SERVER_PATH + "/user/sign_in";
-const LOGOUT = SERVER_PATH + "/signout";
+export const CHECK_LOGIN = SERVER_PATH + "/check_login"
+export const LOGIN = SERVER_PATH + "/user/sign_in";
+export const LOGOUT = SERVER_PATH + "/signout";
 /*============USER================*/
-const GET_USERS = SERVER_PATH + "/user/users";
-const CREATE_USER = SERVER_PATH + "/user/create";
-const UPDATE_USER = SERVER_PATH + "/user/update/:username";
-const DELETE_USER = SERVER_PATH + "/user/delete/:username";
+export const GET_USERS = SERVER_PATH + "/user";
+export const CREATE_USER = SERVER_PATH + "/user/create";
+export const UPDATE_USER = SERVER_PATH + "/user/update/:username";
+export const DELETE_USER = SERVER_PATH + "/user";
 /*============MAJOR================*/
-const GET_MAJOR = SERVER_PATH + "/majors";
-const CREATE_MAJOR = SERVER_PATH + "/majors";
-const DELETE_MAJOR = SERVER_PATH + "/majors";
-const UPDATE_MAJOR = SERVER_PATH + "/majors";
-
+export const GET_MAJOR = SERVER_PATH + "/majors";
+export const CREATE_MAJOR = SERVER_PATH + "/majors";
+export const DELETE_MAJOR = SERVER_PATH + "/majors";
+export const UPDATE_MAJOR = SERVER_PATH + "/majors";
+/*============STUDENT================*/
+export const GET_STUDENT = SERVER_PATH + "/sinh-vien";
+export const CREATE_STUDENT = SERVER_PATH + "/sinh-vien";
+export const DELETE_STUDENT = SERVER_PATH + "/sinh-vien";
+export const UPDATE_STUDENT = SERVER_PATH + "/sinh-vien";
 module.exports.URL_SERVER = {
     SERVER_PORT
 };
-module.exports.URL_USER = {
-    CHECK_LOGIN,
-    GET_USERS,
-    CREATE_USER,
-    UPDATE_USER,
-    DELETE_USER,
-    LOGIN,
-    LOGOUT
-};
-
-module.exports.URL_MAJOR = {
-    GET_MAJOR,
-    CREATE_MAJOR,
-    DELETE_MAJOR,
-    UPDATE_MAJOR
-}
-
 
 
 // const HTTP = "http://";
