@@ -19,7 +19,7 @@ const AvatarComponent = ({ url, width =  100, height = 100, size = 64 }) => {
                 url ? (
                     <img src={url} alt="" />
                     
-                ) : <Icon type="user" style={styleIcon} />
+                ) : <span><Icon type="user" style={styleIcon} /></span>
             }
             <style jsx>{`
                 img{

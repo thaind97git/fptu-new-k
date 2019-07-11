@@ -65,6 +65,20 @@ export const menus = [
                 itemText: 'Create new major'
             }
         ]
+    },
+    {
+        subKey: 'sub5',
+        subIcon: 'form',
+        subText: 'Register method',
+        subLink: undefined,
+        subItem: [
+            {
+                itemKey: 'sub5.1',
+                itemLink: '/method-register',
+                itemIcon: 'unordered-list',
+                itemText: 'List register method'
+            }
+        ]
     }
 ]
 /**
@@ -117,3 +131,7 @@ export const getDefaultKeys = (path, menus) => {
     }
     return [openDefaultKeys]
 }
+
+export const rootSubmenuKeys = menus.map(item => {
+    return item.subKey
+})

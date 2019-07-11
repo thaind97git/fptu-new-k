@@ -1,18 +1,19 @@
 import React, { Component, Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Pagination } from 'antd';
+import { Pagination, Icon } from 'antd';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DELETE_USER, GET_USERS, UPDATE_USER } from '../constant/UrlApi';
 import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
+import Link from 'next/link';
 
-import AvatarComponent from './AvatarComponent';
-import TableComponent from '../components/TableComponent';
+import TableComponent from './TableComponent';
+import HeaderContent from './HeaderContent';
+import StatusComponent from './StatusComponent';
+import RenderColumnComponent from './RenderComlunComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
-import HeaderContent from '../components/HeaderContent';
-import StatusComponent from '../components/StatusComponent';
 import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
 const connectToRedux = connect(
     null,
@@ -55,32 +56,33 @@ const UserComponent = ({ displayNotify }) => {
         {
             title: 'Avatar',
             dataIndex: 'avatar',
-            render: avatar => <AvatarComponent url={avatar} size={20} width={30} height={30} />
+            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
         },
         {
-            title: 'Tên user',
+            title: "User's name",
             dataIndex: 'name',
+            render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Giới tính',
+            title: 'Sex',
             dataIndex: 'gioi_tinh',
-            render: sex => sex === 0 ? 'Male' : sex === 1 ? 'Fmale' : 'không có'
+            render: sex => <RenderColumnComponent type="sex" content={sex} />
             // width: '20%',
         },
         {
-            title: 'email',
+            title: 'Email',
             dataIndex: 'email',
-            render: email => email ? email : 'không có'
+            render: email => <RenderColumnComponent content={email} />
         },
         {
-            title: 'Địa chỉ',
+            title: 'Address',
             dataIndex: 'address',
-            render: address => address ? address : 'không có'
+            render: address => <RenderColumnComponent content={address} />
         },
         {
             title: 'Status',
             dataIndex: 'status',
-            render: status => ( <StatusComponent status={status} /> )
+            render: status => <RenderColumnComponent type="status" content={status} />
         },
         {
             title: 'Edit',
@@ -88,20 +90,9 @@ const UserComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <ModalAsycnLayout
-                            titleButton="Edit" sizeButton="small" valueButton={id} typeButton="primary"
-                            titleModel={<h3>{row.name}</h3>} okModelText="Save"
-                        // PromiseCallAPI={axios.put(`${UPDATE_MAJOR}/:${id}`)}
-                        >
-                            {/* {MajorDetail({
-                                code: row.ma_nganh,
-                                name: row.name,
-                                group: row.nhom_nganh,
-                                dateCreated: (new Date(+row.created).toLocaleDateString()),
-                                status: row.status,
-                                form: form
-                            })} */}
-                        </ModalAsycnLayout>
+                        <Link href={"/user/detail?id=" + id} >
+                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+                        </Link>
                         <ButtonLayout
                             onClick={() => ConfirmLayout({
                                 title: 'Delete', content: 'Do you want delete this record ?',
@@ -124,7 +115,6 @@ const UserComponent = ({ displayNotify }) => {
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
-                setIsLoading(false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
                 setDataSrc(result);
@@ -132,6 +122,7 @@ const UserComponent = ({ displayNotify }) => {
             } catch (error) {
                 console.log(error)
             }
+            setIsLoading(false);
 
         }
         !didCancel && fetchData()
@@ -144,7 +135,7 @@ const UserComponent = ({ displayNotify }) => {
     }
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="Danh sách User" />
+            <HeaderContent isSearch={true} title="List of users" />
             <div className="padding-table">
                 <TableComponent
                     columns={columns}

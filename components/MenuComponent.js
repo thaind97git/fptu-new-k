@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Icon, Menu } from 'antd';
 import Link from 'next/link';
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { getOpenKeys, getDefaultKeys, menus } from '../config/menuConfig';
+import { getOpenKeys, getDefaultKeys, menus, rootSubmenuKeys } from '../config/menuConfig';
 
 class MenuComponent extends Component {
 
@@ -14,12 +14,9 @@ class MenuComponent extends Component {
         };
     }
 
-    rootSubmenuKeys = ['sub1', 'sub3', 'sub2', 'sub4'];
-
-
     onOpenChange = openKeys => {
         const latestOpenKey = openKeys.find(key => this.state.openKeys.indexOf(key) === -1);
-        if (this.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+        if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
             this.setState({ openKeys });
         } else {
             this.setState({
@@ -47,7 +44,7 @@ class MenuComponent extends Component {
                             (subItem.length === 0 || subItem === undefined)
                                 ? (
                                     <Menu.Item key={subKey}>
-                                        <Link href={subLink}>
+                                        <Link href={subLink == undefined ? '' : subLink}>
                                             <a><Icon type={subIcon} /> {subText}</a>
                                         </Link>
                                     </Menu.Item>

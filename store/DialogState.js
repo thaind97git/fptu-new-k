@@ -23,13 +23,13 @@ const getDialogFunctionType = type => {
 export default {
     displayDialog: (state = null, { type, payload }) => {
         if (payload) {
-            const { title, content } = payload;
-            if (!title) {
+            const { title, content, onOK } = payload;
+            if (!title || typeof(onOK) !== 'function') {
                 return state;
             }
             const doDialog = getDialogFunctionType(type);
             if (doDialog) {
-                doDialog({ title: title, content: content })
+                doDialog({ title: title, content: content, onOk() { onOK() } })
                 return payload;
             }
         }

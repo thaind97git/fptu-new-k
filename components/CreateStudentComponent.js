@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio } from 'antd';
 import HeaderContent from '../components/HeaderContent';
 import { CREATE_STUDENT } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
+import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
 import { requestAPI, formItemLayout, spanCol } from '../config';
 
 const connectToRedux = connect(null, dispatch => ({
@@ -21,39 +21,36 @@ function disabledDate(current) {
 }
 
 const configRule = {
-    username: {
-        rules: [
-            { required: true, message: "Please input Username !" }
-        ]
-    },
-    password: {
-        rules: [
-            { required: true, message: 'Please input password !' },
-            { min: 8, message: "Password's length must be at least 8 characters" }
-        ]
-    },
-    confirm: {
-        rules: [
-            { required: true, message: "Please input confirm password !" }
-        ]
-    },
-    birth: {
-        rules: [
-            { required: true, message: "Please input your birthday !" }
-        ]
-    },
-    email: {
-        rules: [
-            { required: true, message: "Please input your E-mail !" },
-            { type: 'email', message: "The input is not valid E-mail !" }
-        ]
-    },
-    phone: {
-        rules: [
-            { required: true, message: "Please input your Phone-number !" },
-            { pattern: /^0(1\d{9}|9\d{8})$/, message: "The input is not valid Phone-number !" }
-        ]
-    }
+    username: [
+        { required: true, message: "Please input Username !" }
+    ],
+    password: [
+        { required: true, message: 'Please input password !' },
+        { min: 8, message: "Password's length must be at least 8 characters" }
+    ],
+    confirm: [
+        { required: true, message: "Please input confirm password !" }
+    ],
+    birth: [
+        { required: true, message: "Please input your birthday !" }
+    ],
+    email: [
+        { required: true, message: "Please input your E-mail !" },
+        { type: 'email', message: "The input is not valid E-mail !" }
+    ],
+    phone: [
+        { required: true, message: "Please input your Phone-number !" },
+        { pattern: /^0(1\d{9}|9\d{8})$/, message: "The input is not valid Phone-number !" }
+    ],
+    cmnd: [
+        { required: true, message: "Please input Card ID !" }
+    ],
+    dateProvided: [
+        { required: true, message: "Please input date Card ID provided !" }
+    ],
+    addressID: [
+        { required: true, message: "Please input date Address Card ID provided !" }
+    ]
 }
 const normFile = e => {
     debugger;
@@ -73,7 +70,6 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log(values)
-                const { name, majorGroup, majors, majorCode, active } = values;
                 const studentObj = {
                     username: values.username,
                     password: values.password,
@@ -87,22 +83,26 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                     email: values.email,
                     facebook: values.facebook,
                     zalo: values.zalo,
-                    avatar: values.upload[0].thumbUrl || '',
+                    avatar: (values.upload && values.upload.length > 0) ? values.upload[0].thumbUrl : '',
                     gioi_tinh: values.sex,
                     so_nha_ten_duong: values.streetAddress,
                     dia_chi_day_du: values.fullAddress
-                  }
+                }
                 setLoadingButton(true);
                 const opt = {
                     url: CREATE_STUDENT,
                     method: 'POST',
-                    data: majorObj
+                    data: studentObj
                 }
                 requestAPI(opt)
                     .then(({ data }) => {
                         setLoadingButton(false)
-                        data && displayDialog(DIALOG_SUCCESS, data.message)
-                        form.resetFields()
+                        if (data && data.status === 200) {
+                            displayDialog(DIALOG_SUCCESS, data.message)
+                            form.resetFields()
+                        } else {
+                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                        }
                     }).catch(({ response }) => {
                         setLoadingButton(false)
                         response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
@@ -148,7 +148,7 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                 <Form.Item label="Birthday" hasFeedback>
                                     {getFieldDecorator('birthDay', configRule.birth)(
-                                        <DatePicker disabledDate={disabledDate} />
+                                        <DatePicker format="DD/MM/YYYY" />
                                     )}
                                 </Form.Item>
                             </Col>
@@ -161,8 +161,8 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             </Col>
                             <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                 <Form.Item label="Date ID provided" hasFeedback>
-                                    {getFieldDecorator('dayProvided', configRule.birth)(
-                                        <DatePicker disabledDate={disabledDate} />
+                                    {getFieldDecorator('dayProvided', configRule.da)(
+                                        <DatePicker format="DD/MM/YYYY" />
                                     )}
                                 </Form.Item>
                             </Col>
@@ -212,10 +212,12 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             </Col>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Sex">
-                                    {getFieldDecorator('sex')(
+                                    {getFieldDecorator('sex', {
+                                        initialValue: 1
+                                    })(
                                         <Radio.Group>
-                                            <Radio value="1">item 1</Radio>
-                                            <Radio value="0">item 2</Radio>
+                                            <Radio value={1}>Fmale</Radio>
+                                            <Radio value={0}>Male</Radio>
                                         </Radio.Group>
                                     )}
                                 </Form.Item>
@@ -248,15 +250,6 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             </Col>
                         </Row>
                     </div>
-                    <Row>
-                        <Col span={span} md={md} lg={lg}>
-                            <Form.Item label="Active">
-                                {getFieldDecorator('active', {
-                                    valuePropName: 'checked',
-                                })(<Checkbox>Active</Checkbox>)}
-                            </Form.Item>
-                        </Col>
-                    </Row>
                     <Row type="flex" align="middle" justify="center">
                         <Form.Item>
                             <Button loading={loadingButton} type="primary" htmlType="submit" >
@@ -270,6 +263,6 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
     )
 }
 
-const WrappedCreateMajor = Form.create()(CreateStudentComponent)
+const WrappedCreateStudent = Form.create()(CreateStudentComponent)
 
-export default connectToRedux(WrappedCreateMajor);
+export default connectToRedux(WrappedCreateStudent);

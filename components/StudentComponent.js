@@ -1,11 +1,14 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Pagination, Row, Col, Input, Form, Checkbox } from 'antd';
+import { Pagination, Row, Col, Input, Form, Checkbox, Icon } from 'antd';
+import { pick } from 'lodash/fp';
 import { connect } from 'react-redux';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { GET_STUDENT, DELETE_STUDENT, UPDATE_STUDENT } from '../constant/UrlApi';
+import { GET_STUDENTS, DELETE_STUDENT, UPDATE_STUDENT } from '../constant/UrlApi';
+import { FETCH_LOADING } from '../store/UtilsState';
 import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
+import Link from 'next/link';
 
 import TableComponent from '../components/TableComponent';
 import StatusComponent from '../components/StatusComponent';
@@ -15,18 +18,62 @@ import ConfirmLayout from '../layouts/ConfirmLayout';
 import HeaderContent from '../components/HeaderContent';
 import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
 import AvatarComponent from './AvatarComponent';
+import RenderColumnComponent from './RenderComlunComponent';
 
 const connectToRedux = connect(
-    null,
+    pick(['isLoading']),
     dispatch => ({
         displayDialog: (type, title = "", content = "") => {
             dispatch({ type: type, payload: { title: title, content: content } })
         },
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message } })
+        },
+        setIsLoading: (type, isLoading) => {
+            dispatch({ type: type, payload: { isLoading: isLoading } })
         }
     })
 )
+
+const StudentDetail = ({ row = {}, form }) => {
+    const { getFieldDecorator } = form;
+    return (
+        <div>
+            <Form>
+                Mã ngành
+                <Form.Item>
+                    {getFieldDecorator('code', { initialValue: row.ma_nganh, })(
+                        <Input type="text" disabled />
+                    )}
+                </Form.Item>
+                Tên ngành
+                <Form.Item>
+                    {getFieldDecorator('name', { initialValue: row.name, })(
+                        <Input type="text" />
+                    )}
+                </Form.Item>
+                Nhóm ngành
+                <Form.Item>
+                    {getFieldDecorator('group', { initialValue: row.nhom_nganh, })(
+                        <Input type="text" />
+                    )}
+                </Form.Item>
+                Ngày tạo
+                <Form.Item>
+                    {getFieldDecorator('created', { initialValue: new Date(+row.created).toLocaleDateString() })(
+                        <Input type="text" disabled />
+                    )}
+                </Form.Item>
+                <Form.Item>
+                    Trạng thái {'\u00A0'}{'\u00A0'}
+                    {getFieldDecorator('status', {
+                        valuePropName: row.status ? 'checked' : 'unchecked',
+                    })(<Checkbox><StatusComponent status={row.status} /></Checkbox>)}
+                </Form.Item>
+            </Form>
+        </div>
+    )
+}
 
 const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
     requestAPI({method: 'DELETE' ,url: `${DELETE_STUDENT}/${id}` })
@@ -42,9 +89,8 @@ const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
         .catch(() => displayNotify(TOAST_ERROR, 'Xóa ngành học thất bại !'))
 }
 
-const StudentComponent = ({ displayNotify }) => {
+const StudentComponent = ({ displayNotify, isLoading, setIsLoading }) => {
     const [dataSrc, setDataSrc] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
@@ -56,37 +102,38 @@ const StudentComponent = ({ displayNotify }) => {
         {
             title: 'Avatar',
             dataIndex: 'avatar',
-            render: avatar => <AvatarComponent url={avatar} size={20} width={30} height={30} />
+            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
         },
         {
-            title: 'Tên student',
-            dataIndex: 'name'
+            title: 'Student name',
+            dataIndex: 'name',
+            render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Ngày sinh',
-            dataIndex: 'created',
-            render: bDate => new Date(+bDate).toLocaleDateString()
+            title: 'Birthday',
+            dataIndex: 'ngay_sinh',
+            render: bDate => <RenderColumnComponent type="date" content={bDate} />
             // width: '20%',
         },
         {
-            title: 'email',
+            title: 'Email',
             dataIndex: 'email',
-            render: email => email ? email : 'không có'
+            render: email => <RenderColumnComponent content={email} />
         },
         {
-            title: 'Địa chỉ',
+            title: 'Full Address',
             dataIndex: 'dia_chi_day_du',
-            render: address => address ? address : 'không có'
+            render: address => <RenderColumnComponent content={address} />
         },
         {
-            title: 'Phone',
+            title: 'Phone number',
             dataIndex: 'phone',
-            render: phone => phone ? phone : 'không có'
+            render: phone => <RenderColumnComponent content={phone} />
         },
         {
             title: 'Status',
             dataIndex: 'status',
-            render: status => ( <StatusComponent status={status} /> )
+            render: status => <StatusComponent status={status} />
         },
         {
             title: 'Edit',
@@ -94,20 +141,9 @@ const StudentComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <ModalAsycnLayout
-                            titleButton="Edit" sizeButton="small" valueButton={id} typeButton="primary"
-                            titleModel={<h3>{row.name}</h3>} okModelText="Save"
-                        // PromiseCallAPI={axios.put(`${UPDATE_MAJOR}/:${id}`)}
-                        >
-                            {/* {MajorDetail({
-                                code: row.ma_nganh,
-                                name: row.name,
-                                group: row.nhom_nganh,
-                                dateCreated: (new Date(+row.created).toLocaleDateString()),
-                                status: row.status,
-                                form: form
-                            })} */}
-                        </ModalAsycnLayout>
+                        <Link href={"/student/detail?id=" + id} >
+                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+                        </Link>
                         <ButtonLayout
                             onClick={() => ConfirmLayout({
                                 title: 'Delete', content: 'Do you want delete this record ?',
@@ -121,15 +157,15 @@ const StudentComponent = ({ displayNotify }) => {
     ];
     useEffect(() => {
         let didCancel = false;
-        setIsLoading(true);
+        setIsLoading(FETCH_LOADING, true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_STUDENT}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
+            url: `${GET_STUDENTS}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
         }
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
-                setIsLoading(false);
+                setIsLoading(FETCH_LOADING, false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
                 setDataSrc(result);
@@ -150,13 +186,14 @@ const StudentComponent = ({ displayNotify }) => {
 
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="Danh sách sinh viên" />
+            <HeaderContent isSearch={true} title="List of students" />
             <div className="padding-table">
                 <TableComponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
-                    rowKey={record => record.key} />
+                    rowKey={record => record.key}
+                    scrollX={1100}/>
                 <br />
                 <Pagination
                     onChange={getPage}

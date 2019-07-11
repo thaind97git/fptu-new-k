@@ -1,72 +1,36 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Pagination, Row, Col, Input, Form, Checkbox } from 'antd';
+import { Pagination, Row, Col, Input, Form, Checkbox, Icon } from 'antd';
+import { pick } from 'lodash/fp';
 import { connect } from 'react-redux';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DELETE_MAJOR, GET_MAJOR, UPDATE_MAJOR } from '../constant/UrlApi';
+import { FETCH_LOADING } from '../store/UtilsState';
 import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
+import Link from 'next/link';
 
-import TableComponent from '../components/TableComponent';
-import StatusComponent from '../components/StatusComponent';
+import TableComponent from './TableComponent';
+import StatusComponent from './StatusComponent';
 
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
-import HeaderContent from '../components/HeaderContent';
-import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
+import HeaderContent from './HeaderContent';
+import RenderColumnComponent from './RenderComlunComponent';
 const connectToRedux = connect(
-    null,
+    pick(['isLoading']),
     dispatch => ({
         displayDialog: (type, title = "", content = "") => {
             dispatch({ type: type, payload: { title: title, content: content } })
         },
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message } })
+        },
+        setIsLoading: (type, isLoading) => {
+            dispatch({ type: type, payload: { isLoading: isLoading } })
         }
     })
 )
-
-
-
-const MajorDetail = ({ row = {}, form }) => {
-    const { getFieldDecorator } = form;
-    return (
-        <div>
-            <Form>
-                Mã ngành
-                <Form.Item>
-                    {getFieldDecorator('code', { initialValue: row.ma_nganh, })(
-                        <Input type="text" disabled />
-                    )}
-                </Form.Item>
-                Tên ngành
-                <Form.Item>
-                    {getFieldDecorator('name', { initialValue: row.name, })(
-                        <Input type="text" />
-                    )}
-                </Form.Item>
-                Nhóm ngành
-                <Form.Item>
-                    {getFieldDecorator('group', { initialValue: row.nhom_nganh, })(
-                        <Input type="text" />
-                    )}
-                </Form.Item>
-                Ngày tạo
-                <Form.Item>
-                    {getFieldDecorator('created', { initialValue: new Date(+row.created).toLocaleDateString() })(
-                        <Input type="text" disabled />
-                    )}
-                </Form.Item>
-                <Form.Item>
-                    Trạng thái {'\u00A0'}{'\u00A0'}
-                    {getFieldDecorator('status', {
-                        valuePropName: row.status ? 'checked' : 'unchecked',
-                    })(<Checkbox><StatusComponent status={row.status} /></Checkbox>)}
-                </Form.Item>
-            </Form>
-        </div>
-    )
-}
 
 const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
     requestAPI({method: 'DELETE' ,url: `${DELETE_MAJOR}/${id}` })
@@ -82,9 +46,8 @@ const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
         .catch(() => displayNotify(TOAST_ERROR, 'Xóa ngành học thất bại !'))
 }
 
-const MajorComponent = ({ displayNotify, form }) => {
+const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
     const [dataSrc, setDataSrc] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
@@ -94,21 +57,30 @@ const MajorComponent = ({ displayNotify, form }) => {
             dataIndex: 'key'
         },
         {
-            title: 'Tên ngành',
+            title: 'Major name',
             dataIndex: 'name',
+            render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Mã ngành',
+            title: 'Major code',
             dataIndex: 'ma_nganh',
+            render: code => <RenderColumnComponent content={code} />
             // width: '20%',
         },
         {
-            title: 'Nhóm ngành',
+            title: 'Major group',
             dataIndex: 'nhom_nganh',
+            render: group => <RenderColumnComponent content={group} />
         },
         {
-            title: 'Tổ hợp môn',
+            title: 'Subject combination',
             dataIndex: 'to_hop_mon',
+            render: x => <RenderColumnComponent content={x} />
+        },
+        {
+            title: 'Date create',
+            dataIndex: 'created',
+            render: bDate => <RenderColumnComponent type="date" content={bDate} />
         },
         {
             title: 'Status',
@@ -121,17 +93,14 @@ const MajorComponent = ({ displayNotify, form }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <ModalAsycnLayout
-                            titleButton="Edit" sizeButton="small" valueButton={id} typeButton="primary"
-                            titleModel={<h3>{row.name}</h3>} okModelText="Save"
-                            // PromiseCallAPI={requestAPI({ method: 'PUT', url: `${UPDATE_MAJOR}/${id}` })}
-                        >
-                            { MajorDetail({ row: row, form: form })}
-                        </ModalAsycnLayout>
+                        <Link href={"/major/detail?id=" + id} >
+                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+                        </Link>
                         <ButtonLayout
                             onClick={() => ConfirmLayout({
                                 title: 'Delete', content: 'Do you want delete this record ?',
-                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
+                                okText: 'Delete', cancelText: 'No', 
+                                functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
                             })} size="small" value={id} type="danger" text="Delete"
                         />
                     </Fragment>
@@ -143,7 +112,7 @@ const MajorComponent = ({ displayNotify, form }) => {
 
     useEffect(() => {
         let didCancel = false;
-        setIsLoading(true);
+        setIsLoading(FETCH_LOADING, true);
         const opt = {
             method: 'GET' ,
             url: `${GET_MAJOR}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
@@ -151,7 +120,7 @@ const MajorComponent = ({ displayNotify, form }) => {
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
-                setIsLoading(false);
+                setIsLoading(FETCH_LOADING, false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
                 setDataSrc(result);
@@ -171,7 +140,7 @@ const MajorComponent = ({ displayNotify, form }) => {
     }
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="Danh sách ngành học" />
+            <HeaderContent isSearch={true} title="List of majors" />
             <div className="padding-table">
                 <TableComponent
                     columns={columns}

@@ -45,6 +45,7 @@ const LoginComponent = ({ form, displayNotify }) => {
                         }
                         displayNotify(TOAST_ERROR, data.errorMessage || 'Tài khoản hoặc mật khẩu không đúng')
                     }).catch(({ response }) => {
+                        console.log(response)
                         setLoadingButton(false);
                         if (response !== undefined) {
                             displayNotify(TOAST_ERROR, response.data.errorMessage || 'Tài khoản hoặc mật khẩu không đúng')

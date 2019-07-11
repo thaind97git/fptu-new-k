@@ -1,11 +1,9 @@
 import { Fragment, useState } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Checkbox } from 'antd';
 import HeaderContent from '../components/HeaderContent';
-import { URL_MAJOR } from '../constant/UrlApi';
+import { CREATE_MAJOR } from '../constant/UrlApi';
 import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { REQUEST_OPTION_DEFAULT } from '../config/options';
 import { requestAPI } from '../config/index';
 
 const connectToRedux = connect(null, dispatch => ({
@@ -58,7 +56,7 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                 }
                 setLoadingButton(true);
                 const opt = {
-                    url: URL_MAJOR.CREATE_MAJOR,
+                    url: CREATE_MAJOR,
                     method: 'POST',
                     data: majorObj
                 }

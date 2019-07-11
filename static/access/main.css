@@ -23,3 +23,7 @@
 .align-center {
     text-align: center
 }
+.unknow{
+    color: orange;
+    opacity: 0.5
+}

@@ -8,24 +8,28 @@ const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;
 
-export const CHECK_LOGIN = SERVER_PATH + "/check_login"
-export const LOGIN = SERVER_PATH + "/user/sign_in";
-export const LOGOUT = SERVER_PATH + "/signout";
+export const CHECK_LOGIN = SERVER_PATH + "/kiem-tra-dang-nhap"
+export const LOGIN = SERVER_PATH + "/nhan-vien/dang-nhap";
+export const LOGOUT = SERVER_PATH + "/dang-xuat";
 /*============USER================*/
-export const GET_USERS = SERVER_PATH + "/user";
-export const CREATE_USER = SERVER_PATH + "/user/create";
-export const UPDATE_USER = SERVER_PATH + "/user/update/:username";
-export const DELETE_USER = SERVER_PATH + "/user";
+export const GET_USERS = SERVER_PATH + "/nhan-vien";
+export const CREATE_USER = SERVER_PATH + "/nhan-vien";
+export const UPDATE_USER = SERVER_PATH + "/nhan-vien";
+export const DELETE_USER = SERVER_PATH + "/nhan-vien";
+export const GET_USER = SERVER_PATH + "/nhan-vien";
 /*============MAJOR================*/
-export const GET_MAJOR = SERVER_PATH + "/majors";
-export const CREATE_MAJOR = SERVER_PATH + "/majors";
-export const DELETE_MAJOR = SERVER_PATH + "/majors";
-export const UPDATE_MAJOR = SERVER_PATH + "/majors";
+export const GET_MAJOR = SERVER_PATH + "/nganh-hoc";
+export const CREATE_MAJOR = SERVER_PATH + "/nganh-hoc";
+export const DELETE_MAJOR = SERVER_PATH + "/nganh-hoc";
+export const UPDATE_MAJOR = SERVER_PATH + "/nganh-hoc";
 /*============STUDENT================*/
-export const GET_STUDENT = SERVER_PATH + "/sinh-vien";
-export const CREATE_STUDENT = SERVER_PATH + "/sinh-vien";
+export const GET_STUDENTS = SERVER_PATH + "/sinh-vien";
+export const CREATE_STUDENT = SERVER_PATH + "/sinh-vien/dang-ky";
 export const DELETE_STUDENT = SERVER_PATH + "/sinh-vien";
 export const UPDATE_STUDENT = SERVER_PATH + "/sinh-vien";
+export const GET_STUDENT = SERVER_PATH + "/sinh-vien";
+
+export const GET_METHOD_REGISTER = SERVER_PATH + "/form-dang-ky";
 module.exports.URL_SERVER = {
     SERVER_PORT
 };

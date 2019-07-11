@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { REQUEST_OPTION_DEFAULT } from './options';
+import provinces from './provinces' 
 export const requestAPI = ({ 
     method = 'GET',
     url = '',
@@ -40,3 +41,10 @@ export const spanCol = {
     md: 24,
     lg: 12
 }
+
+export const DEFAULT_PAGING = {
+    pageSize: 10,
+    pageIndex: 1
+}
+
+export const Provinces = provinces
