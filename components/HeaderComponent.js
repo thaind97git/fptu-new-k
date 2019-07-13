@@ -7,7 +7,7 @@ import { Layout, Avatar, Row, Col, Menu, Dropdown, Icon } from 'antd';
 import Router from 'next/router';
 import * as storageConfig from '../config/storageConfig';
 const { Header } = Layout;
-import { URL_USER } from '../constant/UrlApi';
+import { LOGOUT } from '../constant/UrlApi';
 import { TOAST_ERROR } from '../utils/actions';
 import { Z_INDEX_HEADER } from '../constant/constants';
 
@@ -21,7 +21,12 @@ const connectToRedux = connect(pick(['isOpenMenu']), dispatch => ({
 }));
 
 const logout = (displayNotify) => {
-    axios.get(URL_USER.LOGOUT)
+    const optionLogout = {
+        method: "GET",
+        data: {},
+        withCredentials: true
+    }
+    axios(LOGOUT, optionLogout)
         .then(({ data }) => {
             if (data.status === 200) {
                 storageConfig.removeUsername();

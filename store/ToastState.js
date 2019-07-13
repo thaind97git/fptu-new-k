@@ -3,7 +3,8 @@ import {
   TOAST_SUCCESS,
   TOAST_ERROR,
   TOAST_WARN,
-  TOAST_INFO
+  TOAST_INFO,
+  TOAST_DEFAULT
 } from '../utils/actions';
 
 const TOAST_DEFAULT_OPTIONS = {
@@ -24,8 +25,10 @@ const getToastFunctionType = type => {
       return toast.warn;
     case TOAST_INFO:
       return toast.info;
-    default:
+    case TOAST_DEFAULT:
       return toast;
+    default:
+      return null;
   }
 };
 
@@ -33,12 +36,15 @@ export default {
   displayNotify(state = null, { type, payload }) {
     if (payload) {
       const { message, options = {} } = payload;
-      if (!message && message !== 0) {
-        return payload;
+      if (!message) {
+        return state;
       }
       const opts = Object.assign(TOAST_DEFAULT_OPTIONS, options);
       const doToast = getToastFunctionType(type);
-      doToast(message, opts);
+      if (doToast) {
+        doToast(message, opts);
+        return payload;
+      }
     }
     return state;
   }
