@@ -17,6 +17,12 @@ export const menus = [
                 itemLink: '/student',
                 itemIcon: 'unordered-list',
                 itemText: 'List student'
+            },
+            {
+                itemKey: 'sub2.2',
+                itemLink: '/student/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new student'
             }
         ]
     },
@@ -34,9 +40,9 @@ export const menus = [
             },
             {
                 itemKey: 'sub3.2',
-                itemLink: '/admin',
-                itemIcon: 'unordered-list',
-                itemText: 'List admin'
+                itemLink: '/user/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new user'
             }
         ]
     },
@@ -57,6 +63,20 @@ export const menus = [
                 itemLink: '/major/create',
                 itemIcon: 'plus-square',
                 itemText: 'Create new major'
+            }
+        ]
+    },
+    {
+        subKey: 'sub5',
+        subIcon: 'form',
+        subText: 'Register method',
+        subLink: undefined,
+        subItem: [
+            {
+                itemKey: 'sub5.1',
+                itemLink: '/method-register',
+                itemIcon: 'unordered-list',
+                itemText: 'List register method'
             }
         ]
     }
@@ -111,3 +131,7 @@ export const getDefaultKeys = (path, menus) => {
     }
     return [openDefaultKeys]
 }
+
+export const rootSubmenuKeys = menus.map(item => {
+    return item.subKey
+})

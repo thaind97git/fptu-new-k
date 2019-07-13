@@ -1,7 +1,16 @@
 import { Table } from 'antd';
 import { Fragment } from 'react';
 
-const Tablecomponent = ({ columns, data, handleTableChange, isLoading, pagination, rowKey }) => {
+const Tablecomponent = ({ 
+    columns,
+    data,
+    handleTableChange,
+    isLoading,
+    pagination,
+    rowKey,
+    scrollX = '',
+    scrollY = ''
+}) => {
     return (
         <Fragment>
             <Table
@@ -12,6 +21,7 @@ const Tablecomponent = ({ columns, data, handleTableChange, isLoading, paginatio
                 pagination={pagination || false }
                 loading={isLoading}
                 onChange={handleTableChange}
+                scroll={{ x: scrollX, y: scrollY }}
             />
         </Fragment>
     )

@@ -1,212 +1,154 @@
 import React, { Component, Fragment, useState, useEffect } from 'react';
-import axios from 'axios';
-import TableComponent from '../components/TableComponent';
+import { connect } from 'react-redux';
+import { Pagination, Icon } from 'antd';
+import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
+import { DELETE_USER, GET_USERS, UPDATE_USER } from '../constant/UrlApi';
+import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
+import { requestAPI } from '../config/index';
+import * as Utils from '../utils/utils';
+import Link from 'next/link';
+
+import TableComponent from './TableComponent';
+import HeaderContent from './HeaderContent';
+import StatusComponent from './StatusComponent';
+import RenderColumnComponent from './RenderComlunComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
-import { Pagination } from 'antd';
-import HeaderContent from '../components/HeaderContent';
-import { URL_USER } from '../constant/UrlApi';
-const columns = [
-    {
-        title: 'No.',
-        dataIndex: 'key'
-    },
-    {
-        title: 'Name',
-        dataIndex: 'username',
-        width: '20%',
-    },
-    {
-        title: 'Roles',
-        dataIndex: '_roles',
-        width: '20%',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-    },
-    {
-        title: 'Edit',
-        dataIndex: 'id',
-        render: id => <Fragment>
-            <ButtonLayout size="small" value={id} type="success" text="View" />
-            <ButtonLayout size="small" value={id} type="primary" text="Edit" />
-            <ButtonLayout
-                onClick={() => ConfirmLayout({
-                    title: 'Delete', content: 'Do you want delete this record ?',
-                    okText: 'Delete', cancelText: 'No'
-                })}
-                size="small"
-                value={id}
-                type="danger"
-                text="Delete"
-            />
-        </Fragment>,
-        width: '20%'
-    },
-];
-
-const data = [
-    {
-        id: 1,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
+import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
+const connectToRedux = connect(
+    null,
+    dispatch => ({
+        displayDialog: (type, title = "", content = "") => {
+            dispatch({ type: type, payload: { title: title, content: content } })
         },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 2,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Female',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 3,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Female',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 4,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 5,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 6,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 7,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 8,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 9,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 10,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    },
-    {
-        id: 11,
-        name: {
-            first: 'judo',
-            last: 'nguyen'
-        },
-        gender: 'Male',
-        email: 'thaind97.dev@gmail.com'
-    }
-]
-
-
-function Get(pageIndex, pageSize) {
-    console.log(pageIndex)
-    console.log(pageSize)
-}
-
-let currentNo = 0;
-data.map(item => {
-    currentNo++;
-    item.key = currentNo;
-})
-
-const fetchData = async (pageSize, pageIndex) => {
-    // return await axios.get(URL_USER.ALL_USER, { pageSize: pageSize, pageIndex: pageIndex })
-}
-
-class UserComponent extends Component {
-
-    state = {
-        data: [],
-        pageSize: 10,
-        pageIndex: 0,
-        isLoading: false
-    }
-
-    componentWillMount() {
-        const { pageSize, pageIndex } = this.state;
-        // fetchData(pageSize, pageIndex).then(rs => this.setState({ data: rs.data.data }))
-        // axios.get(URL_USER.ALL_USER, { pageSize: pageSize, pageIndex: pageIndex }).then(rs => this.setState({ data: rs.data.data }))
-    }
-
-    changePage = (pageIndex, pageSize) => {
-        this.setState({
-            pageSize: pageSize,
-            pageIndex: pageIndex
-        })
-    }
-    render() {
-        const { isLoading, data, pageSize } = this.state
-        const pagination = {
-            total: 12,
-            defaultCurrent: 1,
-            pageSize: pageSize,
-            onChange: this.changePage
+        displayNotify: (type, message) => {
+            dispatch({ type: type, payload: { message: message } })
         }
+    })
+)
 
-        return (
-            <Fragment>
-                <HeaderContent isSearch={true} title="Danh sách account" />
-                <div className="padding-table">
-                    <TableComponent
-                        columns={columns}
-                        isLoading={isLoading}
-                        data={data}
-                        rowKey={record => record._id}
-                        pagination={pagination} />
-                </div>
-            </Fragment>
-        )
-    }
+const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
+    requestAPI({method: 'DELETE' ,url: `${DELETE_USER}/${id}` })
+        .then(({ data }) => {
+            if (data && data.status === 200) {
+                displayNotify(TOAST_SUCCESS, 'Xóa user thành công !')
+                setIsReFetch(!isReFetch);
+            } else {
+                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa user thất bại !')
+            }
+            return;
+        })
+        .catch(() => displayNotify(TOAST_ERROR, 'Xóa user thất bại !'))
 }
-export default UserComponent;
+
+const UserComponent = ({ displayNotify }) => {
+    const [dataSrc, setDataSrc] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [totalPage, setTotalPage] = useState(0);
+    const [isReFetch, setIsReFetch] = useState(false);
+
+    const columns = [
+        {
+            title: 'No.',
+            dataIndex: 'key'
+        },
+        {
+            title: 'Avatar',
+            dataIndex: 'avatar',
+            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
+        },
+        {
+            title: "User's name",
+            dataIndex: 'name',
+            render: name => <RenderColumnComponent content={name} />
+        },
+        {
+            title: 'Sex',
+            dataIndex: 'gioi_tinh',
+            render: sex => <RenderColumnComponent type="sex" content={sex} />
+            // width: '20%',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            render: email => <RenderColumnComponent content={email} />
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+            render: address => <RenderColumnComponent content={address} />
+        },
+        {
+            title: 'Date created',
+            dataIndex: 'created',
+            render: created => <RenderColumnComponent type="date" content={created} />
+        },
+        {
+            title: 'Edit',
+            dataIndex: 'id',
+            render: (id, row, index) => {
+                return (
+                    <Fragment>
+                        <Link href={"/user/detail?id=" + id} >
+                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+                        </Link>
+                        <ButtonLayout
+                            onClick={() => ConfirmLayout({
+                                title: 'Delete', content: 'Do you want delete this record ?',
+                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
+                            })} size="small" value={id} type="danger" text="Delete"
+                        />
+                    </Fragment>
+                )
+            },
+        },
+    ];
+
+    useEffect(() => {
+        let didCancel = false;
+        setIsLoading(true);
+        const opt = {
+            method: 'GET' ,
+            url: `${GET_USERS}?page_num=${pageIndex}&page_row=${PAGE_SIZE}`
+        }
+        const fetchData = async () => {
+            try {
+                const rs = await requestAPI(opt);
+                const { result, count } = rs.data.data;
+                Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
+                setDataSrc(result);
+                setTotalPage(count)
+            } catch (error) {
+                console.log(error)
+            }
+            setIsLoading(false);
+
+        }
+        !didCancel && fetchData()
+        return () => {
+            didCancel = true;
+        };
+    }, [pageIndex, isReFetch])
+    const getPage = (pageIndex, pageSize) => {
+        setPageIndex(pageIndex);
+    }
+    return (
+        <Fragment>
+            <HeaderContent isSearch={true} title="List of users" />
+            <div className="padding-table">
+                <TableComponent
+                    columns={columns}
+                    isLoading={isLoading}
+                    data={dataSrc}
+                    rowKey={record => record.key} />
+                <br />
+                <Pagination
+                    onChange={getPage}
+                    defaultCurrent={1}
+                    total={totalPage} />
+            </div>
+        </Fragment>
+    )
+}
+export default connectToRedux(UserComponent);

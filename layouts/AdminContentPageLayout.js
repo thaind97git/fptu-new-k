@@ -12,7 +12,7 @@ const AdminContentPageLayout = ({ marginLeft, children }) => {
                         {children}
                     </div>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>Abc ©2018 Designed by Front end team</Footer>
+                <Footer style={{ textAlign: 'center' }}>Thaind97git ©2019 Designed by Ant design</Footer>
             </Layout>
             <style jsx>{`
                     .admin-content {
