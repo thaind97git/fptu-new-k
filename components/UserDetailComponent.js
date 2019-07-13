@@ -1,15 +1,16 @@
 import React, { Component, Fragment } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Avatar  } from 'antd';
+import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Avatar, Select  } from 'antd';
 import HeaderContent from './HeaderContent';
 import { requestAPI, formItemLayout, spanCol } from '../config';
-import { GET_USER, UPDATE_USER  } from '../constant/UrlApi';
-import NotFoundComponent from './NotFoundComponent';
+import { GET_USER, UPDATE_USER, GET_PROVINCES  } from '../constant/UrlApi';
+import MissinginforComponent from './MissinginforComponent';
 import AvatarComponent from './AvatarComponent';
 import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
-import { momentDateUser, formatDateServer } from '../utils/dateUtils';
+import { momentDateUser, formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../utils/dateUtils';
 
+const { Option } = Select;
 const connectToRedux = connect(null, dispatch => ({
     displayNotify: (type, message) => {
         dispatch({ type: type, payload: { message: message, options: {} } })
@@ -21,20 +22,10 @@ const connectToRedux = connect(null, dispatch => ({
 
 const configRule = {
     name: [
-        { required: true, message: "Please input user's name !" }
-    ],
-    username: [
-        { required: true, message: "Please input Username !" }
-    ],
-    password: [
-        { required: true, message: 'Please input password !' },
-        { min: 8, message: "Password's length must be at least 8 characters" }
-    ],
-    confirm: [
-        { required: true, message: "Please input confirm password !" }
+        { required: true, message: "Please input name !" }
     ],
     birth: [
-        { required: true, message: "Please input your birthday !" }
+        { required: true, message: "Please input birthday !" }
     ],
     email: [
         { required: true, message: "Please input your E-mail !" },
@@ -71,31 +62,40 @@ class StudentDetailComponent extends Component {
         super(props);
         this.state = {
             user: {},
+            provinces: [],
             id: Router.query.id
         }
     }
     componentWillMount() {
-        const opt = {
-            method: 'GET',
-            url: `${GET_USER}/${this.state.id}`
-        }
+        const opt = { method: 'GET', url: `${GET_USER}/${this.state.id}` }
+        const opt2 = { method: 'GET', url: GET_PROVINCES }
         const getStudent = async () => {
             try {
                 const rs = await requestAPI(opt);
+                const rs2 = await requestAPI(opt2)
                 const { data } = rs.data;
-                this.setState({ user: data })
+                this.setState({ user: data, provinces: rs2.data.data })
             } catch (error) {
                 console.log(error)
             }
         }
-        getStudent()
+        const getProvinces = async () => {
+            try {
+                const rs2 = await requestAPI(opt2)
+                const { data } = rs2.data;
+                this.setState({ provinces: data })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        getStudent();
+        getProvinces();
     }
     updateUser = (e) => {
         e.preventDefault();
         const { displayDialog, form, displayNotify } = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                debugger
                 const stuObj = {
                     name: values.name,
                     ngay_sinh: formatDateServer(values.birthDay),
@@ -104,11 +104,12 @@ class StudentDetailComponent extends Component {
                     noi_cap: values.addressProvided,
                     phone: values.phone,
                     email: values.email,
-                    facebook: values.facebook,
-                    zalo: values.zalo,
-                    avatar: (values.avatar && values.avatar.length > 0) ? values.avatar[0].thumbUrl : '',
+                    facebook: values.facebook || '',
+                    zalo: values.zalo || '',
+                    avatar: values.avatar || '',
                     gioi_tinh: values.sex,
                 }
+                debugger
                 const opt = {
                     url: `${UPDATE_USER}/${this.state.id}`,
                     method: 'PUT',
@@ -128,11 +129,11 @@ class StudentDetailComponent extends Component {
         });
     }
     render() {
-        const { user = null } = this.state;
+        const { user = null, provinces = [] } = this.state;
         const { span, md, lg } = spanCol;
         const { getFieldDecorator } = this.props.form;
         return (
-            !user ? <NotFoundComponent />
+            !user ? <MissinginforComponent>Not Found</MissinginforComponent>
                 : <Fragment>
                     <HeaderContent title="Update User" />
                     <div className="padding-table">
@@ -151,8 +152,8 @@ class StudentDetailComponent extends Component {
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Birthday" hasFeedback>
                                             {getFieldDecorator('birthDay', {
-                                                initialValue: user.ngay_sinh ? 
-                                                momentDateUser(user.ngay_sinh) : null
+                                                initialValue: momentTimeSpanPicker(user.ngay_sinh),
+                                                rules: configRule.birth
                                             })(
                                                 <DatePicker format="DD/MM/YYYY" />
                                             )}
@@ -171,8 +172,7 @@ class StudentDetailComponent extends Component {
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Date ID provided" hasFeedback>
                                             {getFieldDecorator('dayProvided', {
-                                                initialValue: user.ngay_cap ? 
-                                                momentDateUser(user.ngay_cap) : null,
+                                                initialValue: momentDatePicker(user.ngay_cap),
                                                 rules: configRule.dateProvided
                                             })(
                                                 <DatePicker format="DD/MM/YYYY" />
@@ -186,7 +186,20 @@ class StudentDetailComponent extends Component {
                                             {getFieldDecorator('addressProvided', {
                                                 initialValue: user.noi_cap,
                                                 rules: configRule.addressID
-                                            })(<Input />)}
+                                            })(
+                                                <Select 
+                                                    showSearch 
+                                                    optionFilterProp="children"
+                                                    placeholder="Please select address Card ID provided">
+                                                    {
+                                                        provinces.map(item => {
+                                                            return <Option key={item.id} value={item.id}>
+                                                                    { item.name }
+                                                                </Option>
+                                                        })
+                                                    }
+                                                </Select>
+                                            )}
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
@@ -236,7 +249,7 @@ class StudentDetailComponent extends Component {
                                                 getValueFromEvent: normFile,
                                             })(
                                                 // <Fragment>
-                                                    <AvatarComponent src={user.avatar} width={50} height={50} size={24} />
+                                                    <AvatarComponent src={user.avatar} medium />
                                                     // <Upload multiple={false} name="logo" listType="picture">
                                                     //     <Button>
                                                     //         <Icon type="upload" /> Click to upload

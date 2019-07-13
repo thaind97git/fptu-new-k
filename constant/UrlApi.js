@@ -29,6 +29,8 @@ export const DELETE_STUDENT = SERVER_PATH + "/sinh-vien";
 export const UPDATE_STUDENT = SERVER_PATH + "/sinh-vien";
 export const GET_STUDENT = SERVER_PATH + "/sinh-vien";
 
+
+export const GET_PROVINCES = SERVER_PATH + "/dia-chi/tinh-thanh-pho";
 export const GET_METHOD_REGISTER = SERVER_PATH + "/form-dang-ky";
 module.exports.URL_SERVER = {
     SERVER_PORT

@@ -80,9 +80,9 @@ const UserComponent = ({ displayNotify }) => {
             render: address => <RenderColumnComponent content={address} />
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            render: status => <RenderColumnComponent type="status" content={status} />
+            title: 'Date created',
+            dataIndex: 'created',
+            render: created => <RenderColumnComponent type="date" content={created} />
         },
         {
             title: 'Edit',

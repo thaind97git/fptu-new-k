@@ -5,10 +5,10 @@ import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radi
 import HeaderContent from './HeaderContent';
 import { requestAPI, formItemLayout, spanCol } from '../config';
 import { GET_STUDENT, UPDATE_STUDENT } from '../constant/UrlApi';
-import NotFoundComponent from './NotFoundComponent';
+import NotFoundComponent from './MissinginforComponent';
 import AvatarComponent from './AvatarComponent';
 import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR, TOAST_SUCCESS } from '../utils/actions';
-import { momentDateUser, formatDateServer } from '../utils/dateUtils';
+import { momentDateUser, formatDateServer, momentDatePicker } from '../utils/dateUtils';
 import { Provinces } from '../config';
 const { Option } = Select;
 const connectToRedux = connect(null, dispatch => ({
@@ -166,8 +166,7 @@ class StudentDetailComponent extends Component {
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Date ID provided" hasFeedback>
                                             {getFieldDecorator('dayProvided', {
-                                                initialValue: student.ngay_cap ? 
-                                                momentDateUser(student.ngay_cap) : null,
+                                                initialValue: momentDatePicker(student.ngay_cap),
                                                 rules: configRule.dateProvided
                                             })(
                                                 <DatePicker format="DD/MM/YYYY" />
@@ -230,7 +229,7 @@ class StudentDetailComponent extends Component {
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Avatar">
                                             {getFieldDecorator('avatar')(
-                                                <Avatar src={student.avatar} size="large" />
+                                                <Avatar src={student.avatar} size="large"  />
                                             )}
                                         </Form.Item>
                                     </Col>

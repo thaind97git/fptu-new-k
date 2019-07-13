@@ -4,5 +4,13 @@ export const formatDateServer = (date) => {
 }
 
 export const momentDateUser = (timeSpan) => {
-    return timeSpan ? moment(new Date(Date(timeSpan)).toLocaleDateString(), "MM-DD-YYYY") : '';
+    return timeSpan ? moment(+timeSpan).format("DD/MM/YYYY h:mm A") : '';
+}
+
+export const momentDatePicker = (time) => {
+    return time ? moment(time, 'DD/MM/YYYY') : null;
+}
+
+export const momentTimeSpanPicker = (timeSpan) => {
+    return timeSpan ? moment(+timeSpan) : null;
 }

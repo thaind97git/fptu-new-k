@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import AvatarComponent from '../components/AvatarComponent';
 import StatusComponent from './StatusComponent';
+import { momentDateUser } from '../utils/dateUtils';
 const RenderColumnComponent = ({
     type = 'text',
     content
@@ -9,8 +10,8 @@ const RenderColumnComponent = ({
     return (
         <Fragment>
             {
-                  type === 'date' ? (new Date(Date(+content)).toLocaleDateString())
-                : type === 'avatar' ? <AvatarComponent url={content} size={20} width={30} height={30} />
+                  type === 'date' ? content ? momentDateUser(content) : <div className="unknow">Not yet</div>
+                : type === 'avatar' ? <AvatarComponent small url={content} small />
                 : type === 'sex' ? (
                     content === 0 ? 'Male' : content === 1 ? 'Fmale' 
                     : <div className="unknow">Not yet</div>

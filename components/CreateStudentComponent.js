@@ -125,14 +125,14 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             </Col>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Password" hasFeedback>
-                                    {getFieldDecorator('password', configRule.password)(<Input type="password" />)}
+                                    {getFieldDecorator('password', configRule.password)(<Input.Password />)}
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Confirm password" hasFeedback>
-                                    {getFieldDecorator('confirm', configRule.confirm)(<Input type="password" />)}
+                                    {getFieldDecorator('confirm', configRule.confirm)(<Input.Password />)}
                                 </Form.Item>
                             </Col>
                         </Row>

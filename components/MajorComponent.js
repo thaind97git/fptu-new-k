@@ -1,17 +1,16 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Pagination, Row, Col, Input, Form, Checkbox, Icon } from 'antd';
+import { Pagination, Row, Col, Input, Form, Checkbox, Icon, Tag } from 'antd';
 import { pick } from 'lodash/fp';
 import { connect } from 'react-redux';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DELETE_MAJOR, GET_MAJOR, UPDATE_MAJOR } from '../constant/UrlApi';
-import { FETCH_LOADING } from '../store/UtilsState';
 import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
 import Link from 'next/link';
 
+
 import TableComponent from './TableComponent';
-import StatusComponent from './StatusComponent';
 
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
@@ -26,9 +25,6 @@ const connectToRedux = connect(
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message } })
         },
-        setIsLoading: (type, isLoading) => {
-            dispatch({ type: type, payload: { isLoading: isLoading } })
-        }
     })
 )
 
@@ -46,11 +42,12 @@ const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
         .catch(() => displayNotify(TOAST_ERROR, 'Xóa ngành học thất bại !'))
 }
 
-const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
+const MajorComponent = ({ displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const columns = [
         {
             title: 'No.',
@@ -75,17 +72,20 @@ const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
         {
             title: 'Subject combination',
             dataIndex: 'to_hop_mon',
-            render: x => <RenderColumnComponent content={x} />
+            render: tags => (
+                <span>
+                  {tags.map(tag => (
+                    <Tag color="blue" key={tag}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </span>
+              )
         },
         {
             title: 'Date create',
             dataIndex: 'created',
-            render: bDate => <RenderColumnComponent type="date" content={bDate} />
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            render: status => (<StatusComponent status={status} />)
+            render: created => <RenderColumnComponent type="date" content={created} />
         },
         {
             title: 'Edit',
@@ -111,8 +111,7 @@ const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
     
 
     useEffect(() => {
-        let didCancel = false;
-        setIsLoading(FETCH_LOADING, true);
+        setIsLoading(true);
         const opt = {
             method: 'GET' ,
             url: `${GET_MAJOR}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
@@ -120,7 +119,7 @@ const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
-                setIsLoading(FETCH_LOADING, false);
+                setIsLoading(false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
                 setDataSrc(result);
@@ -130,10 +129,7 @@ const MajorComponent = ({ displayNotify, form, isLoading, setIsLoading }) => {
             }
 
         }
-        !didCancel && fetchData()
-        return () => {
-            didCancel = true;
-        };
+        fetchData()
     }, [pageIndex, isReFetch])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);

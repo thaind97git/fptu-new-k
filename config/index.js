@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { REQUEST_OPTION_DEFAULT } from './options';
 import provinces from './provinces' 
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
 export const requestAPI = ({ 
     method = 'GET',
     url = '',
     data = {},
     headers = {},
-    responseType = 'json'
+    responseType = 'json',
 }) => {
     if (url.length === 0) {
         console.log('URL is require');
@@ -17,9 +19,10 @@ export const requestAPI = ({
         url: url,
         data: data,
         headers: headers,
-        responseType: responseType
+        responseType: responseType,
+        cancelToken: source.token
     }
-    return axios(Object.assign(REQUEST_OPTION_DEFAULT, opt))
+    return axios(Object.assign(REQUEST_OPTION_DEFAULT, opt));
 }
 
 export const formItemLayout = {
