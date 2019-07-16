@@ -45,6 +45,7 @@ const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
 const MajorComponent = ({ displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [pageSize, setPageSize] = useState(PAGE_SIZE);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -114,14 +115,14 @@ const MajorComponent = ({ displayNotify }) => {
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_MAJOR}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
+            url: `${GET_MAJOR}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
                 setIsLoading(false);
                 const { result, count } = rs.data.data;
-                Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
+                Utils.mapIndex(result, (pageIndex - 1) * pageSize)
                 setDataSrc(result);
                 setTotalPage(count)
             } catch (error) {
@@ -130,24 +131,25 @@ const MajorComponent = ({ displayNotify }) => {
 
         }
         fetchData()
-    }, [pageIndex, isReFetch])
+    }, [pageIndex, isReFetch, pageSize])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
     }
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="List of majors" />
+            <HeaderContent 
+                title="List of majors" 
+                isPageSize={true}
+                getPageSize={setPageSize}/>
             <div className="padding-table">
                 <TableComponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
-                    rowKey={record => record.key} />
-                <br />
-                <Pagination
-                    onChange={getPage}
-                    defaultCurrent={1}
-                    total={totalPage} />
+                    rowKey={record => record.key} 
+                    pageSize={pageSize}
+                    onChangePage={getPage}
+                    totalPage={totalPage} />
             </div>
         </Fragment>
     )

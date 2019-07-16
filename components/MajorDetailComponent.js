@@ -87,7 +87,7 @@ class MajorDetailComponent extends Component {
                         if (data && data.status === 200) {
                             displayDialog(DIALOG_SUCCESS, data.message, '', () => Router.push('/major'))
                         } else {
-                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                            displayNotify(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
                         }
                     }).catch(({ response }) => {
                         response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
@@ -159,18 +159,6 @@ class MajorDetailComponent extends Component {
                                             {getFieldDecorator('created', {
                                                 initialValue: momentDateUser(major.created)
                                             })(<Input disabled />)}
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Status">
-                                            {getFieldDecorator('status', {
-                                                initialValue: major.status
-                                            })(
-                                                <Radio.Group>
-                                                    <Radio value={1}>Active</Radio>
-                                                    <Radio value={0}>Deactive</Radio>
-                                                </Radio.Group>
-                                            )}
                                         </Form.Item>
                                     </Col>
                                 </Row>

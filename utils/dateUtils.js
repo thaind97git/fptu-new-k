@@ -12,5 +12,5 @@ export const momentDatePicker = (time) => {
 }
 
 export const momentTimeSpanPicker = (timeSpan) => {
-    return timeSpan ? moment(+timeSpan) : null;
+    return timeSpan ? moment.unix(+timeSpan) : null;
 }

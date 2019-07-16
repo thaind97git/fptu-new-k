@@ -1,40 +1,83 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from 'react-redux';
 import { pick } from 'lodash/fp';
-import { Pagination, Icon } from 'antd';
-
+import { Pagination, Icon, Row, Input, Select } from 'antd';
 import { requestAPI } from '../config';
-import { FETCH_LOADING } from '../store/UtilsState';
-import { GET_METHOD_REGISTER } from '../constant/UrlApi';
+import { GET_FORM_REGISTER, UPDATE_RESULT_FORM } from '../constant/UrlApi';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { DIALOG_ERROR, DIALOG_INFO, DIALOG_WARN, DIALOG_SUCCESS } from '../utils/actions';
+import { DIALOG_INFO, TOAST_SUCCESS, TOAST_ERROR, DIALOG_SUCCESS } from '../utils/actions';
+import Link from 'next/link';
 
 import * as Utils from '../utils/utils';
 import HeaderContent from './HeaderContent';
 import Tablecomponent from './TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
-import ModalAsycnLayout from '../layouts/ModalAsycnLayout';
-import StatusComponent from './StatusComponent';
 import RenderColumnComponent from './RenderComlunComponent';
 
+const { Option } = Select;
 const connectToRedux = connect(
-    pick(['isLoading']),
+    pick(['']),
     dispatch => ({
-        displayDialog: (type, title = "", content = "") => {
-            dispatch({ type: type, payload: { title: title, content: content } })
-        },
         displayNotify: (type, message) => {
-            dispatch({ type: type, payload: { message: message } })
+            dispatch({ type: type, payload: { message: message, options: {} } })
         },
-        setIsLoading: (type, isLoading) => {
-            dispatch({ type: type, payload: { isLoading: isLoading } })
+        displayDialog: (type, title, content, onOK) => {
+            dispatch({ type: type, payload: { title, content, onOK } })
         }
     })
 )
 
-const MethodRegisterComponent = ({ isLoading, setIsLoading, displayDialog }) => {
+const UpdateResult = ({ 
+    id, 
+    displayDialog,
+    displayNotify, 
+    isReFetch, 
+    setIsReFetch,
+    currentValue
+}) => {
+    console.log(currentValue)
+    return (
+        displayDialog(
+            DIALOG_INFO,
+            'Update result for form register',
+            (<Row>
+                <Select style={{width: '100%'}} defaultValue={currentValue} onChange={(e) => currentValue = e}>
+                    <Option value="pass">Pass</Option>
+                    <Option value="fail">Fail</Option>
+                </Select>
+            </Row>),
+            () => {
+                const opt = { 
+                    method: 'PUT', 
+                    url: `${UPDATE_RESULT_FORM}/${id}/ket-qua`,
+                    data: {
+                        name: currentValue
+                    }
+                }
+                if (currentValue === undefined) {
+                    displayNotify(TOAST_ERROR, 'Cập nhật kết quả thất bại !')
+                    return;
+                }
+                requestAPI(opt).then(({ data }) => {
+                    if (data && data.status === 200) {
+                        setIsReFetch(!isReFetch);
+                        displayNotify(TOAST_SUCCESS, 'Cập nhật kết quả thành công !')
+                    } else {
+                        displayNotify(TOAST_ERROR, data.errorMessage || 'Cập nhật kết quả thất bại !')
+                    }
+                    return;
+                })
+                .catch(() => displayNotify(TOAST_ERROR, 'Cập nhật kết quả thất bại !'))
+            }
+        )
+    )   
+}
+
+const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [pageSize, setPageSize] = useState(PAGE_SIZE);
+    const [isLoading, setIsLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
     const columns = [
@@ -45,7 +88,7 @@ const MethodRegisterComponent = ({ isLoading, setIsLoading, displayDialog }) => 
         {
             title: 'Code',
             dataIndex: 'code',
-            render: code => 
+            render: code => //<RenderColumnComponent content={code} />
                 <ButtonLayout 
                     onClick={() => displayDialog(DIALOG_SUCCESS, 'Code: ', <RenderColumnComponent content={code} />)} 
                     size="small" 
@@ -79,14 +122,34 @@ const MethodRegisterComponent = ({ isLoading, setIsLoading, displayDialog }) => 
         {
             title: 'Result',
             dataIndex: 'ket_qua.name',
-            render: result => <RenderColumnComponent content={result} />
+            render: (result, row, index) => (
+                <Row>
+                    <Row style={{textAlign: 'center'}}>
+                        <RenderColumnComponent type="result" content={result} />
+                    </Row>
+                    <Row>
+                        <ButtonLayout 
+                        onClick={() => 
+                            UpdateResult({
+                                id: row.id, 
+                                displayDialog, 
+                                displayNotify, 
+                                isReFetch, 
+                                setIsReFetch, 
+                                currentValue: result
+                            })
+                        } 
+                        type="primary" size="small" text="Update"  />
+                    </Row>
+                </Row>
+                )
         },
         {
             title: 'Exam',
             dataIndex: 'ky_thi',
             render: exam => 
                 <ButtonLayout 
-                    isDisabled={true}
+                    isDisabled={false}
                     onClick={() => {}} 
                     size="small" 
                     text={<Icon type="plus-circle" theme="twoTone" />} />
@@ -107,29 +170,14 @@ const MethodRegisterComponent = ({ isLoading, setIsLoading, displayDialog }) => 
             render: created => <RenderColumnComponent type="date" content={created} />
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            render: status => (<StatusComponent status={status} />)
-        },
-        {
             title: 'Edit',
             dataIndex: 'id',
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <ModalAsycnLayout
-                            titleButton={<Icon type="edit" />} sizeButton="small" valueButton={id} typeButton="primary"
-                            titleModel={<h3>{row.name}</h3>} okModelText="Save"
-                            // PromiseCallAPI={requestAPI({ method: 'PUT', url: `${UPDATE_MAJOR}/${id}` })}
-                        >
-                            {/* { MajorDetail({ row: row, form: form })} */}
-                        </ModalAsycnLayout>
-                        <ButtonLayout
-                            onClick={() => ConfirmLayout({
-                                title: 'Delete', content: 'Do you want delete this record ?',
-                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
-                            })} size="small" value={id} type="danger" text="Delete"
-                        />
+                        <Link href={"/regiter-form/detail?id=" + id} >
+                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+                        </Link>
                     </Fragment>
                 )
             },
@@ -139,47 +187,48 @@ const MethodRegisterComponent = ({ isLoading, setIsLoading, displayDialog }) => 
 
     useEffect(() => {
         let didCancel = false;
-        setIsLoading(FETCH_LOADING, true);
+        setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_METHOD_REGISTER}?page_num=${pageIndex}&page_row=${PAGE_SIZE}` 
+            url: `${GET_FORM_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
                 const { result, count } = rs.data.data;
-                Utils.mapIndex(result, (pageIndex - 1) * PAGE_SIZE)
+                Utils.mapIndex(result, (pageIndex - 1) * pageSize)
                 setDataSrc(result);
                 setTotalPage(count)
             } catch (error) {
                 console.log(error)
             }
-            setIsLoading(FETCH_LOADING, false);
+            setIsLoading(false);
 
         }
         !didCancel && fetchData()
         return () => {
             didCancel = true;
         };
-    }, [pageIndex, isReFetch])
+    }, [pageIndex, isReFetch, pageSize])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
     }
     return (
         <Fragment>
-            <HeaderContent isSearch={true} title="List method register" />
+            <HeaderContent 
+                isPageSize={true} 
+                getPageSize={setPageSize} 
+                title="List register form" />
             <div className="padding-table">
                 <Tablecomponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
                     rowKey={record => record.key}
-                    scrollX={1600}/>
-                <br />
-                <Pagination
-                    onChange={getPage}
-                    defaultCurrent={1}
-                    total={totalPage} />
+                    scrollX={1600} 
+                    pageSize={pageSize}
+                    onChangePage={getPage}
+                    totalPage={totalPage}/>
             </div>
         </Fragment>
     )

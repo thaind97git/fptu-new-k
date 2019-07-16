@@ -1,37 +1,35 @@
 import { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Col, Row, Checkbox, Select } from 'antd';
+import { Form, Input, Button, Col, Row, Select } from 'antd';
 import HeaderContent from '../components/HeaderContent';
 import { CREATE_MAJOR } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
+import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI, formItemLayout, spanCol } from '../config';
 import { TO_HOP_MON } from '../constant/constants';
+import Router from 'next/router';
 
 const { Option } = Select;
 const connectToRedux = connect(null, dispatch => ({
     displayNotify: (type, message) => {
         dispatch({ type: type, payload: { message: message, options: {} } })
     },
-    displayDialog: (type, title, content) => {
-        dispatch({ type: type, payload: { title: title, content: content } })
-    }
+    displayDialog: (type, title, content, onOK) => {
+        dispatch({ type: type, payload: { title: title, content: content, onOK } })
+    },
 }))
 
 const configRule = {
     code: [
-        { required: true, message: "Please input major's code !" }
+        { required: true, message: "Please input major code !" }
     ],
     name: [
-        { required: true, message: "Please input major's name !" }
+        { required: true, message: "Please input major name !" }
     ],
     group: [
-        { required: true, message: "Please input group's major !" }
+        { required: true, message: "Please input group major !" }
     ],
     to_hop: [
         { required: true, message: 'Please input subject combination !' },
-    ],
-    created: [
-        { required: true, message: "Please input date created !" }
     ]
 }
 
@@ -45,9 +43,9 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 const majorObj = {
-                    ma_nganh: values.majorCode,
-                    nhom_nganh: values.majorGroup,
-                    name: values.name,
+                    ma_nganh,
+                    nhom_nganh,
+                    name,
                     to_hop_mon: values.to_hop_mon.join(','),
                     creator: 0,
                     created: new Date().getTime(),
@@ -65,7 +63,7 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                         if (data && data.status === 200) {
                             displayDialog(DIALOG_SUCCESS, data.message, '', () => Router.push('/major'))
                         } else {
-                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                            displayNotify(TOAST_ERROR, data.errorMessage || 'Có lỗi xảy ra')
                         }
                     }).catch(({ response }) => {
                         setLoadingButton(false)
@@ -81,23 +79,23 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                 <Form  {...formItemLayout} onSubmit={() => createMajor(event)}>
                     <Row>
                         <Col span={span} md={md} lg={lg}>
-                            <Form.Item label="Major's name" hasFeedback>
+                            <Form.Item label="Major name">
                                 {getFieldDecorator('name', {
                                     rules: configRule.name
-                                })(<Input />)}
+                                })(<Input placeholder="Please input name of major"/>)}
                             </Form.Item>
                         </Col>
                         <Col span={span} md={md} lg={lg}>
-                            <Form.Item label="Major's code" hasFeedback>
-                                {getFieldDecorator('majorCode', {
+                            <Form.Item label="Major code">
+                                {getFieldDecorator('ma_nganh', {
                                     rules: configRule.code
-                                })(<Input />)}
+                                })(<Input placeholder="Please input code of major"/>)}
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row>
                         <Col span={span} md={md} lg={lg}>
-                            <Form.Item label="Subject combination" hasFeedback>
+                            <Form.Item label="Subject combination">
                                 {getFieldDecorator('to_hop_mon', {
                                     rules: configRule.to_hop
                                 })(
@@ -112,10 +110,10 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                             </Form.Item>
                         </Col>
                         <Col span={span} md={md} lg={lg}>
-                            <Form.Item label="Group's major" hasFeedback>
-                                {getFieldDecorator('majorGroup', {
+                            <Form.Item label="Major group" >
+                                {getFieldDecorator('nhom_nganh', {
                                     rules: configRule.group
-                                })(<Input />)}
+                                })(<Input placeholder="Please input group of major"/>)}
                             </Form.Item>
                         </Col>
                     </Row>

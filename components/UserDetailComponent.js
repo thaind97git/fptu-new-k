@@ -1,24 +1,31 @@
 import React, { Component, Fragment } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Avatar, Select  } from 'antd';
+import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Avatar, Select } from 'antd';
+import { pick } from 'lodash/fp';
+import { bindActionCreators } from 'redux';
+import * as AdminState from '../store/AdminState';
 import HeaderContent from './HeaderContent';
 import { requestAPI, formItemLayout, spanCol } from '../config';
-import { GET_USER, UPDATE_USER, GET_PROVINCES  } from '../constant/UrlApi';
+import { GET_USER, UPDATE_USER, GET_PROVINCES } from '../constant/UrlApi';
 import MissinginforComponent from './MissinginforComponent';
 import AvatarComponent from './AvatarComponent';
 import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
 import { momentDateUser, formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../utils/dateUtils';
 
 const { Option } = Select;
-const connectToRedux = connect(null, dispatch => ({
-    displayNotify: (type, message) => {
-        dispatch({ type: type, payload: { message: message, options: {} } })
-    },
-    displayDialog: (type, title, content, onOK) => {
-        dispatch({ type: type, payload: { title: title, content: content, onOK } })
-    }
-}))
+const connectToRedux = connect(
+    pick(['listProvinces']),
+    dispatch => ({
+        adminActions: bindActionCreators(AdminState, dispatch),
+        displayNotify: (type, message) => {
+            dispatch({ type: type, payload: { message: message, options: {} } })
+        },
+        displayDialog: (type, title, content, onOK) => {
+            dispatch({ type: type, payload: { title: title, content: content, onOK } })
+        },
+    })
+)
 
 const configRule = {
     name: [
@@ -58,80 +65,57 @@ const normFile = e => {
 };
 
 class StudentDetailComponent extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             user: {},
-            provinces: [],
             id: Router.query.id
         }
     }
     componentWillMount() {
         const opt = { method: 'GET', url: `${GET_USER}/${this.state.id}` }
-        const opt2 = { method: 'GET', url: GET_PROVINCES }
         const getStudent = async () => {
             try {
                 const rs = await requestAPI(opt);
-                const rs2 = await requestAPI(opt2)
-                const { data } = rs.data;
-                this.setState({ user: data, provinces: rs2.data.data })
+                this.setState({ user: rs.data.data })
             } catch (error) {
                 console.log(error)
             }
         }
-        const getProvinces = async () => {
-            try {
-                const rs2 = await requestAPI(opt2)
-                const { data } = rs2.data;
-                this.setState({ provinces: data })
-            } catch (error) {
-                console.log(error)
-            }
-        }
+        this.props.adminActions.getListProvincesAPI();
         getStudent();
-        getProvinces();
     }
     updateUser = (e) => {
         e.preventDefault();
         const { displayDialog, form, displayNotify } = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                const stuObj = {
-                    name: values.name,
-                    ngay_sinh: formatDateServer(values.birthDay),
-                    cmnd: values.cmnd,
-                    ngay_cap: formatDateServer(values.dayProvided),
-                    noi_cap: values.addressProvided,
-                    phone: values.phone,
-                    email: values.email,
-                    facebook: values.facebook || '',
-                    zalo: values.zalo || '',
-                    avatar: values.avatar || '',
-                    gioi_tinh: values.sex,
-                }
-                debugger
+                values.ngay_sinh = formatDateServer(values.ngay_sinh);
+                values.ngay_cap = formatDateServer(values.ngay_cap);
                 const opt = {
                     url: `${UPDATE_USER}/${this.state.id}`,
                     method: 'PUT',
-                    data: stuObj
+                    data: values
                 }
                 requestAPI(opt)
-                    .then(({data}) => {
+                    .then(({ data }) => {
                         if (data && data.status === 200) {
-                            displayDialog(DIALOG_SUCCESS, data.message, '',() => Router.push('/user'))
+                            displayDialog(DIALOG_SUCCESS, data.message, '', () => Router.push('/user'))
                         } else {
-                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                            console.log(data)
+                            displayDialog(DIALOG_ERROR, data.errorMessage)
                         }
-                    }).catch(({response}) => {
+                    }).catch(({ response }) => {
                         response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
                     })
             }
         });
     }
     render() {
-        const { user = null, provinces = [] } = this.state;
+        const { user = null } = this.state;
         const { span, md, lg } = spanCol;
-        const { getFieldDecorator } = this.props.form;
+        const { listProvinces, form } = this.props;
+        const { getFieldDecorator } = form;
         return (
             !user ? <MissinginforComponent>Not Found</MissinginforComponent>
                 : <Fragment>
@@ -151,7 +135,7 @@ class StudentDetailComponent extends Component {
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Birthday" hasFeedback>
-                                            {getFieldDecorator('birthDay', {
+                                            {getFieldDecorator('ngay_sinh', {
                                                 initialValue: momentTimeSpanPicker(user.ngay_sinh),
                                                 rules: configRule.birth
                                             })(
@@ -171,7 +155,7 @@ class StudentDetailComponent extends Component {
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Date ID provided" hasFeedback>
-                                            {getFieldDecorator('dayProvided', {
+                                            {getFieldDecorator('ngay_cap', {
                                                 initialValue: momentDatePicker(user.ngay_cap),
                                                 rules: configRule.dateProvided
                                             })(
@@ -183,19 +167,19 @@ class StudentDetailComponent extends Component {
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Address ID provided" hasFeedback>
-                                            {getFieldDecorator('addressProvided', {
+                                            {getFieldDecorator('noi_cap', {
                                                 initialValue: user.noi_cap,
-                                                rules: configRule.addressID
+                                                rules: configRule.addressID,
                                             })(
-                                                <Select 
-                                                    showSearch 
+                                                <Select
+                                                    showSearch
                                                     optionFilterProp="children"
                                                     placeholder="Please select address Card ID provided">
                                                     {
-                                                        provinces.map(item => {
+                                                        listProvinces.map(item => {
                                                             return <Option key={item.id} value={item.id}>
-                                                                    { item.name }
-                                                                </Option>
+                                                                {item.id + '. ' + item.name}
+                                                            </Option>
                                                         })
                                                     }
                                                 </Select>
@@ -223,22 +207,26 @@ class StudentDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Facebook" hasFeedback>
-                                            {getFieldDecorator('facebook', {
-                                                initialValue: user.facebook
+                                        <Form.Item label="Date created" hasFeedback>
+                                            {getFieldDecorator('created', {
+                                                initialValue: momentDateUser(user.created)
                                             })(
-                                                <Input />
+                                                <Input disabled />
                                             )}
                                         </Form.Item>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Zalo" hasFeedback>
-                                            {getFieldDecorator('zalo', {
-                                                initialValue: user.zalo
+                                        <Form.Item label="Sex">
+                                            {getFieldDecorator('gioi_tinh', {
+                                                initialValue: user.gioi_tinh,
+                                                rules: configRule.sex
                                             })(
-                                                <Input />
+                                                <Radio.Group>
+                                                    <Radio value={1}>Fmale</Radio>
+                                                    <Radio value={2}>Male</Radio>
+                                                </Radio.Group>
                                             )}
                                         </Form.Item>
                                     </Col>
@@ -249,28 +237,13 @@ class StudentDetailComponent extends Component {
                                                 getValueFromEvent: normFile,
                                             })(
                                                 // <Fragment>
-                                                    <AvatarComponent src={user.avatar} medium />
-                                                    // <Upload multiple={false} name="logo" listType="picture">
-                                                    //     <Button>
-                                                    //         <Icon type="upload" /> Click to upload
-                                                    //     </Button>
-                                                    // </Upload>
+                                                <AvatarComponent src={user.avatar} medium />
+                                                // <Upload multiple={false} name="logo" listType="picture">
+                                                //     <Button>
+                                                //         <Icon type="upload" /> Click to upload
+                                                //     </Button>
+                                                // </Upload>
                                                 // </Fragment>
-                                            )}
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Sex">
-                                            {getFieldDecorator('sex', {
-                                                initialValue: user.gioi_tinh,
-                                                rules: configRule.sex
-                                            })(
-                                                <Radio.Group>
-                                                    <Radio value={1}>Fmale</Radio>
-                                                    <Radio value={0}>Male</Radio>
-                                                </Radio.Group>
                                             )}
                                         </Form.Item>
                                     </Col>

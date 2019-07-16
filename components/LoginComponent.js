@@ -45,7 +45,6 @@ const LoginComponent = ({ form, displayNotify }) => {
                         }
                         displayNotify(TOAST_ERROR, data.errorMessage || 'Tài khoản hoặc mật khẩu không đúng')
                     }).catch(({ response }) => {
-                        console.log(response)
                         setLoadingButton(false);
                         if (response !== undefined) {
                             displayNotify(TOAST_ERROR, response.data.errorMessage || 'Tài khoản hoặc mật khẩu không đúng')
@@ -82,9 +81,8 @@ const LoginComponent = ({ form, displayNotify }) => {
                         {getFieldDecorator('password', {
                             rules: [{ required: true, message: 'Please input your Password!' }],
                         })(
-                            <Input
+                            <Input.Password
                                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                type="password"
                                 placeholder="Password"
                             />,
                         )}

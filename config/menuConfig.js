@@ -69,17 +69,51 @@ export const menus = [
     {
         subKey: 'sub5',
         subIcon: 'form',
-        subText: 'Register method',
+        subText: 'Form register',
         subLink: undefined,
         subItem: [
             {
                 itemKey: 'sub5.1',
-                itemLink: '/method-register',
+                itemLink: '/register-form',
                 itemIcon: 'unordered-list',
-                itemText: 'List register method'
+                itemText: 'List register form'
             }
         ]
-    }
+    },
+    {
+        subKey: 'sub6',
+        subIcon: 'schedule',
+        subText: 'School',
+        subLink: undefined,
+        subItem: [
+            {
+                itemKey: 'sub5.1',
+                itemLink: '/school',
+                itemIcon: 'unordered-list',
+                itemText: 'List schools'
+            },
+            {
+                itemKey: 'sub5.2',
+                itemLink: '/school/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new school'
+            }
+        ]
+    },
+    {
+        subKey: 'sub7',
+        subIcon: 'form',
+        subText: 'Type register',
+        subLink: undefined,
+        subItem: [
+            {
+                itemKey: 'sub7.1',
+                itemLink: '/register-type',
+                itemIcon: 'unordered-list',
+                itemText: 'List register type'
+            }
+        ]
+    },
 ]
 /**
  * Find Parent menu in array menus by path
