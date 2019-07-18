@@ -1,7 +1,7 @@
-import { Table } from 'antd';
+import { Table, Pagination } from 'antd';
 import { Fragment } from 'react';
 
-const Tablecomponent = ({ 
+const Tablecomponent = ({
     columns,
     data,
     handleTableChange,
@@ -9,20 +9,30 @@ const Tablecomponent = ({
     pagination,
     rowKey,
     scrollX = '',
-    scrollY = ''
+    scrollY = '',
+    pageSize,
+    onChangePage,
+    defaultCurrent = 1,
+    totalPage
 }) => {
     return (
         <Fragment>
             <Table
-                style={{overflowX: 'auto'}}
+                style={{ overflowX: 'auto' }}
                 columns={columns}
                 rowKey={rowKey}
                 dataSource={data}
-                pagination={pagination || false }
+                pagination={pagination || false}
                 loading={isLoading}
                 onChange={handleTableChange}
                 scroll={{ x: scrollX, y: scrollY }}
             />
+            <br/>
+            <Pagination
+                pageSize={pageSize}
+                onChange={onChangePage}
+                defaultCurrent={defaultCurrent}
+                total={totalPage} />
         </Fragment>
     )
 }

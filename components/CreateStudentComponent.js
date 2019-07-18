@@ -1,17 +1,24 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect, Component } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio } from 'antd';
+import { pick } from 'lodash/fp';
+import Router from 'next/router';
+import { bindActionCreators } from 'redux';
+import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Select } from 'antd';
+import * as AdminState from '../store/AdminState';
 import HeaderContent from '../components/HeaderContent';
-import { CREATE_STUDENT } from '../constant/UrlApi';
+import { CREATE_STUDENT, GET_PROVINCES } from '../constant/UrlApi';
 import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
 import { requestAPI, formItemLayout, spanCol } from '../config';
+import { formatDateServer } from '../utils/dateUtils';
 
-const connectToRedux = connect(null, dispatch => ({
+const { Option } = Select;
+const connectToRedux = connect(pick(['listProvinces']), dispatch => ({
+    adminActions: bindActionCreators(AdminState, dispatch),
     displayNotify: (type, message) => {
         dispatch({ type: type, payload: { message: message, options: {} } })
     },
-    displayDialog: (type, title, content) => {
-        dispatch({ type: type, payload: { title: title, content: content } })
+    displayDialog: (type, title, content, onOK) => {
+        dispatch({ type: type, payload: { title: title, content: content, onOK: onOK } })
     }
 }))
 
@@ -21,15 +28,19 @@ function disabledDate(current) {
 }
 
 const configRule = {
+    name: [
+        { required: true, message: "Please input name !" }
+    ],
     username: [
-        { required: true, message: "Please input Username !" }
+        { required: true, message: "Please input username !" }
     ],
     password: [
         { required: true, message: 'Please input password !' },
         { min: 8, message: "Password's length must be at least 8 characters" }
     ],
     confirm: [
-        { required: true, message: "Please input confirm password !" }
+        { required: true, message: "Please input confirm password !" },
+        { min: 8, message: "Password's length must be at least 8 characters" }
     ],
     birth: [
         { required: true, message: "Please input your birthday !" }
@@ -61,93 +72,105 @@ const normFile = e => {
     return e && e.fileList;
 };
 
-const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
-    const { getFieldDecorator } = form;
-    const [loadingButton, setLoadingButton] = useState(false);
-    const { span, md, lg } = spanCol;
-    const createStudent = (e) => {
+class CreateStudentComponent extends Component {
+    constructor() {
+        super()
+    }
+    
+    componentWillMount() {
+        let didCancel = false;
+        if (!didCancel) {
+            this.props.adminActions.getListProvincesAPI();
+        }
+        return didCancel = true;
+    }
+    createStudent = (e, displayDialog, displayNotify, form) => {
         e.preventDefault();
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log(values)
-                const studentObj = {
-                    username: values.username,
-                    password: values.password,
-                    confirm: values.confirm,
-                    name: values.name,
-                    ngay_sinh: values.birthDay,
-                    cmnd: values.cmnd,
-                    ngay_cap: values.dayProvided,
-                    noi_cap: values.addressProvided,
-                    phone: values.phone,
-                    email: values.email,
-                    facebook: values.facebook,
-                    zalo: values.zalo,
-                    avatar: (values.upload && values.upload.length > 0) ? values.upload[0].thumbUrl : '',
-                    gioi_tinh: values.sex,
-                    so_nha_ten_duong: values.streetAddress,
-                    dia_chi_day_du: values.fullAddress
-                }
-                setLoadingButton(true);
+                values.ngay_sinh = formatDateServer(values.ngay_sinh);
+                values.ngay_cap = formatDateServer(values.ngay_cap);
+                values.avatar = (values.avatar && values.avatar.length > 0) ? values.avatar[0].thumbUrl : ''
                 const opt = {
                     url: CREATE_STUDENT,
                     method: 'POST',
-                    data: studentObj
+                    data: values
+                }
+                if (values.password !== values.confirm) {
+                    displayNotify(TOAST_ERROR, "Vui lòng nhập đúng confirm password")
+                    return;
                 }
                 requestAPI(opt)
                     .then(({ data }) => {
-                        setLoadingButton(false)
                         if (data && data.status === 200) {
-                            displayDialog(DIALOG_SUCCESS, data.message)
-                            form.resetFields()
+                            displayDialog(DIALOG_SUCCESS, data.message, '',() => Router.push('/student'))
                         } else {
-                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                            displayNotify(TOAST_ERROR, data.errorMessage || 'Có lỗi xảy ra')
                         }
                     }).catch(({ response }) => {
-                        setLoadingButton(false)
                         response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
                     })
             }
         });
     }
+    render() {
+        const {
+            form,
+            displayNotify,
+            displayDialog,
+            listProvinces
+        } = this.props;
+        const { getFieldDecorator } = form;
+        const { span, md, lg } = spanCol;
     return (
         <Fragment>
             <HeaderContent title="Create new student" />
             <div className="padding-table">
-                <Form  {...formItemLayout} onSubmit={() => createStudent(event)}>
+                <Form  {...formItemLayout} onSubmit={() => 
+                    this.createStudent(event, displayDialog, displayNotify, form)}>
                     <div className="card">
-                        <div className="card-header-absolute">Student's Account :</div>
+                        <div className="card-header-absolute">Account of student :</div>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Username" hasFeedback>
-                                    {getFieldDecorator('username', configRule.username)(<Input />)}
+                                <Form.Item label="Username">
+                                    {getFieldDecorator('username', {
+                                        rules: configRule.username
+                                    })(<Input placeholder="Please input username"/>)}
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Password" hasFeedback>
-                                    {getFieldDecorator('password', configRule.password)(<Input.Password />)}
+                                <Form.Item label="Password">
+                                    {getFieldDecorator('password', {
+                                        rules: configRule.password
+                                    })(<Input.Password placeholder="Please input password"/>)}
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Confirm password" hasFeedback>
-                                    {getFieldDecorator('confirm', configRule.confirm)(<Input.Password />)}
+                                <Form.Item label="Confirm password">
+                                    {getFieldDecorator('confirm', {
+                                        rules: configRule.confirm
+                                    })(<Input.Password placeholder="Please input confirm password"/>)}
                                 </Form.Item>
                             </Col>
                         </Row>
                     </div>
                     <div className="card">
-                        <div className="card-header-absolute">Student's information :</div>
+                        <div className="card-header-absolute">Information of student :</div>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Student's Name" hasFeedback>
-                                    {getFieldDecorator('name')(<Input />)}
+                                <Form.Item label="Name of student">
+                                    {getFieldDecorator('name', {
+                                        rules: configRule.name
+                                    })(<Input placeholder="Please input name of student"/>)}
                                 </Form.Item>
                             </Col>
                             <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                 <Form.Item label="Birthday" hasFeedback>
-                                    {getFieldDecorator('birthDay', configRule.birth)(
+                                    {getFieldDecorator('ngay_sinh', {
+                                        rules: configRule.birth
+                                    })(
                                         <DatePicker format="DD/MM/YYYY" />
                                     )}
                                 </Form.Item>
@@ -156,12 +179,16 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                         <Row>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="ID Card" hasFeedback>
-                                    {getFieldDecorator('cmnd', configRule.card)(<Input />)}
+                                    {getFieldDecorator('cmnd', {
+                                        rules: configRule.cmnd
+                                    })(<Input placeholder="Please input ID Card of student"/>)}
                                 </Form.Item>
                             </Col>
                             <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                 <Form.Item label="Date ID provided" hasFeedback>
-                                    {getFieldDecorator('dayProvided', configRule.da)(
+                                    {getFieldDecorator('ngay_cap', {
+                                        rules: configRule.dateProvided
+                                    })(
                                         <DatePicker format="DD/MM/YYYY" />
                                     )}
                                 </Form.Item>
@@ -170,26 +197,43 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                         <Row>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Address ID provided" hasFeedback>
-                                    {getFieldDecorator('addressProvided')(<Input />)}
+                                    {getFieldDecorator('noi_cap', {
+                                        rules: configRule.addressID
+                                    })(
+                                        <Select
+                                            showSearch
+                                            optionFilterProp="children"
+                                            placeholder="Please select address Card ID provided">
+                                            {
+                                                listProvinces.map(item => {
+                                                    return <Option key={item.id} value={item.id}>
+                                                        {item.id + '. ' + item.name}
+                                                    </Option>
+                                                })
+                                            }
+                                        </Select>
+                                    )}
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Phone number" hasFeedback>
-                                    {getFieldDecorator('phone', configRule.phone)(
-                                        <Input />
+                                <Form.Item label="Phone number">
+                                    {getFieldDecorator('phone', {
+                                        rules: configRule.phone
+                                    })(
+                                        <Input placeholder="Please input phone of student"/>
                                     )}
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Address street" hasFeedback>
-                                    {getFieldDecorator('streetAddress')(<Input />)}
+                                <Form.Item label="Address street">
+                                    {getFieldDecorator('so_nha_ten_duong')(<Input />)}
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Full address" hasFeedback>
-                                    {getFieldDecorator('fullAddress')(
+                                <Form.Item label="Full address">
+                                    {getFieldDecorator('dia_chi_day_du')(
                                         <Input />
                                     )}
                                 </Form.Item>
@@ -198,7 +242,7 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                         <Row>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Avatar">
-                                    {getFieldDecorator('upload', {
+                                    {getFieldDecorator('avatar', {
                                         valuePropName: 'fileList',
                                         getValueFromEvent: normFile,
                                     })(
@@ -212,12 +256,12 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                             </Col>
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Sex">
-                                    {getFieldDecorator('sex', {
+                                    {getFieldDecorator('gioi_tinh', {
                                         initialValue: 1
                                     })(
                                         <Radio.Group>
                                             <Radio value={1}>Fmale</Radio>
-                                            <Radio value={0}>Male</Radio>
+                                            <Radio value={2}>Male</Radio>
                                         </Radio.Group>
                                     )}
                                 </Form.Item>
@@ -225,24 +269,26 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                         </Row>
                     </div>
                     <div className="card">
-                        <div className="card-header-absolute">Student's Social Network :</div>
+                        <div className="card-header-absolute">Social network of student :</div>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Email" hasFeedback>
-                                    {getFieldDecorator('email', configRule.email)(
-                                        <Input />
+                                <Form.Item label="Email">
+                                    {getFieldDecorator('email', {
+                                        rules: configRule.email
+                                    })(
+                                        <Input placeholder="Please input email"/>
                                     )}
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Facebook" hasFeedback>
+                                <Form.Item label="Facebook">
                                     {getFieldDecorator('facebook')(<Input />)}
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Zalo" hasFeedback>
+                                <Form.Item label="Zalo">
                                     {getFieldDecorator('zalo')(
                                         <Input />
                                     )}
@@ -252,7 +298,7 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                     </div>
                     <Row type="flex" align="middle" justify="center">
                         <Form.Item>
-                            <Button loading={loadingButton} type="primary" htmlType="submit" >
+                            <Button type="primary" htmlType="submit" >
                                 Create new Student
                             </Button>
                         </Form.Item>
@@ -260,7 +306,7 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
                 </Form>
             </div>
         </Fragment>
-    )
+    )}
 }
 
 const WrappedCreateStudent = Form.create()(CreateStudentComponent)

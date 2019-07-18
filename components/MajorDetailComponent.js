@@ -87,7 +87,7 @@ class MajorDetailComponent extends Component {
                         if (data && data.status === 200) {
                             displayDialog(DIALOG_SUCCESS, data.message, '', () => Router.push('/major'))
                         } else {
-                            displayDialog(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
+                            displayNotify(DIALOG_ERROR, data.errorMessage || 'Có lỗi xảy ra')
                         }
                     }).catch(({ response }) => {
                         response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
@@ -119,7 +119,7 @@ class MajorDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Major's Name" hasFeedback>
+                                        <Form.Item label="Major's Name">
                                             {getFieldDecorator('name', {
                                                 initialValue: major.name,
                                                 rules: configRule.name
@@ -129,7 +129,7 @@ class MajorDetailComponent extends Component {
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Group's major" hasFeedback>
+                                        <Form.Item label="Group's major">
                                             {getFieldDecorator('nhom_nganh', {
                                                 initialValue: major.nhom_nganh,
                                                 rules: configRule.group
@@ -137,7 +137,7 @@ class MajorDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
-                                        <Form.Item label="Subject combination" hasFeedback>
+                                        <Form.Item label="Subject combination">
                                             {getFieldDecorator('to_hop_mon', {
                                                 initialValue: major.to_hop_mon,
                                                 rules: configRule.to_hop
@@ -159,18 +159,6 @@ class MajorDetailComponent extends Component {
                                             {getFieldDecorator('created', {
                                                 initialValue: momentDateUser(major.created)
                                             })(<Input disabled />)}
-                                        </Form.Item>
-                                    </Col>
-                                    <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Status">
-                                            {getFieldDecorator('status', {
-                                                initialValue: major.status
-                                            })(
-                                                <Radio.Group>
-                                                    <Radio value={1}>Active</Radio>
-                                                    <Radio value={0}>Deactive</Radio>
-                                                </Radio.Group>
-                                            )}
                                         </Form.Item>
                                     </Col>
                                 </Row>
