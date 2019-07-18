@@ -1,20 +1,14 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { middleware as apiMiddleware } from 'redux-api-call';
 import rootReducer from './rootReducer';
 import thunk from 'redux-thunk';
+import { composeWithDevTools } from "redux-devtools-extension";
 
-const cp = typeof window !== 'undefined' ?
-window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 const makeStore = (initialState) => {
+    return createStore(
+        rootReducer,
+        initialState,
+        composeWithDevTools(applyMiddleware(thunk))
+    );
 
-    const middlewares = applyMiddleware(
-        apiMiddleware,
-        thunk
-      );
-
-    if (process.env.NODE_ENV === "development") {
-        return createStore(rootReducer, initialState, cp(middlewares))
-    }
-    return createStore(rootReducer, initialState, middlewares)
 }
 export default makeStore;
