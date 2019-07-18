@@ -1,82 +1,93 @@
-import React, { Component, Fragment, useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Pagination, Icon } from 'antd';
+import { pick } from 'lodash/fp';
+import { connect } from 'react-redux';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { DELETE_USER, GET_USERS, UPDATE_USER } from '../constant/UrlApi';
+import { GET_EXAMS, DELETE_EXAM } from '../constant/UrlApi';
 import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
 import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
 import Link from 'next/link';
 
-import TableComponent from './TableComponent';
-import HeaderContent from './HeaderContent';
-import RenderColumnComponent from './RenderComlunComponent';
+import TableComponent from '../components/TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
+import HeaderContent from '../components/HeaderContent';
+import RenderColumnComponent from './RenderComlunComponent';
+
 const connectToRedux = connect(
-    null,
+    pick(['']),
     dispatch => ({
-        displayDialog: (type, title = "", content = "") => {
-            dispatch({ type: type, payload: { title: title, content: content } })
-        },
         displayNotify: (type, message) => {
-            dispatch({ type: type, payload: { message: message } })
-        }
+            dispatch({ type: type, payload: { message: message, options: {} } })
+        },
+        displayDialog: (type, title, content, onOK) => {
+            dispatch({ type: type, payload: { title: title, content: content, onOK } })
+        },
     })
 )
 
+
 const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
-    requestAPI({method: 'DELETE' ,url: `${DELETE_USER}/${id}` })
+    requestAPI({method: 'DELETE' ,url: `${DELETE_EXAM}/${id}` })
         .then(({ data }) => {
             if (data && data.status === 200) {
+                displayNotify(TOAST_SUCCESS, 'Xóa trường học thành công !')
                 setIsReFetch(!isReFetch);
-                displayNotify(TOAST_SUCCESS, 'Xóa user thành công !')
             } else {
-                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa user thất bại !')
+                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa trường học thất bại !')
             }
             return;
         })
-        .catch(() => displayNotify(TOAST_ERROR, 'Xóa user thất bại !'))
+        .catch(() => displayNotify(TOAST_ERROR, 'Xóa trường học thất bại !'))
 }
 
-const UserComponent = ({ displayNotify }) => {
+const ExamComponent = ({ displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [pageSize, setPageSize] = useState(PAGE_SIZE);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [pageSize, setPageSize] = useState(PAGE_SIZE);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
-
     const columns = [
         {
             title: 'No.',
             dataIndex: 'key'
         },
         {
-            title: 'Avatar',
-            dataIndex: 'avatar',
-            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
+            title: 'Exam type',
+            dataIndex: 'loai_ky_thi',
+            render: type => <RenderColumnComponent content={type} />
         },
         {
-            title: "User's name",
+            title: 'Exam name',
             dataIndex: 'name',
             render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Sex',
-            dataIndex: 'gioi_tinh',
-            render: sex => <RenderColumnComponent type="sex" content={sex} />
-            // width: '20%',
+            title: 'Exam date',
+            dataIndex: 'ngay_thi',
+            render: examDate => <RenderColumnComponent content={examDate} />
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            render: email => <RenderColumnComponent content={email} />
+            title: 'Exam time',
+            dataIndex: 'gio_thi',
+            render: time => <RenderColumnComponent content={time} />
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            render: address => <RenderColumnComponent content={address} />
+            title: 'Date start',
+            dataIndex: 'ngay_bat_dau',
+            render: start => <RenderColumnComponent content={start} />
+        },
+        {
+            title: 'Date end',
+            dataIndex: 'ngay_ket_thuc',
+            render: end => <RenderColumnComponent content={end} />
+        },
+        {
+            title: 'Description',
+            dataIndex: 'ghi_chu',
+            render: desc => <RenderColumnComponent content={desc} />
         },
         {
             title: 'Date created',
@@ -89,7 +100,7 @@ const UserComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/user/detail?id=" + id} >
+                        <Link href={"/school/detail?id=" + id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
@@ -103,17 +114,17 @@ const UserComponent = ({ displayNotify }) => {
             },
         },
     ];
-
     useEffect(() => {
         let didCancel = false;
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_USERS}?page_num=${pageIndex}&page_row=${pageSize}`
+            url: `${GET_EXAMS}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
+                setIsLoading(false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * pageSize)
                 setDataSrc(result);
@@ -121,23 +132,23 @@ const UserComponent = ({ displayNotify }) => {
             } catch (error) {
                 console.log(error)
             }
-            setIsLoading(false);
 
         }
         !didCancel && fetchData()
         return () => {
             didCancel = true;
-        };
+        }
     }, [pageIndex, isReFetch, pageSize])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
     }
+
     return (
         <Fragment>
             <HeaderContent 
+                title="List of exams"
                 isPageSize={true}
-                getPageSize={setPageSize}
-                title="List of users" />
+                getPageSize={setPageSize} />
             <div className="padding-table">
                 <TableComponent
                     columns={columns}
@@ -146,9 +157,10 @@ const UserComponent = ({ displayNotify }) => {
                     rowKey={record => record.key} 
                     pageSize={pageSize}
                     onChangePage={getPage}
-                    totalPage={totalPage}/>
+                    totalPage={totalPage}
+                    scrollX={1200}/>
             </div>
         </Fragment>
     )
 }
-export default connectToRedux(UserComponent);
+export default connectToRedux(ExamComponent);

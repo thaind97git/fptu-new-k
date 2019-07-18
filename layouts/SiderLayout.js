@@ -21,7 +21,6 @@ const SiderLayout = ({ isOpenMenu }) => {
             <style jsx>{`
                 .logo {
                     width: 100%;
-                    padding: 6px
                 }
             `}</style>
         </Fragment>

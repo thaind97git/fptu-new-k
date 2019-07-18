@@ -1,14 +1,14 @@
 import React from 'react';
 import AdminPageLayout from '../../layouts/AdminPageLayout';
 import AuthenHOC from '../../HOC/authenHOC';
-import CreateUserComponent from '../../components/CreateUserComponent';
+import CreateExamComponent from '../../components/CreateExamComponent';
 
-const CreateUserLayout = (rootProps) => {
+const CreateExamLayout = (rootProps) => {
     return (
         <AdminPageLayout>
-            <CreateUserComponent />
+            <CreateExamComponent />
         </AdminPageLayout>
     )
 }
 
-export default AuthenHOC(CreateUserLayout)
+export default AuthenHOC(CreateExamLayout)

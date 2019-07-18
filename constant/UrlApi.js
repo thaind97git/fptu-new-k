@@ -28,10 +28,29 @@ export const CREATE_STUDENT = SERVER_PATH + "/sinh-vien/dang-ky";
 export const DELETE_STUDENT = SERVER_PATH + "/sinh-vien";
 export const UPDATE_STUDENT = SERVER_PATH + "/sinh-vien";
 export const GET_STUDENT = SERVER_PATH + "/sinh-vien";
+/*============SCHOOL================*/
+export const GET_SCHOOLS = SERVER_PATH + "/truong-hoc";
+export const CREATE_SCHOOL = SERVER_PATH + "/truong-hoc";
+export const DELETE_SCHOOL = SERVER_PATH + "/truong-hoc";
+export const UPDATE_SCHOOL = SERVER_PATH + "/truong-hoc";
+export const GET_SCHOOL = SERVER_PATH + "/truong-hoc";
+/*============EXAM================*/
+export const GET_EXAMS = SERVER_PATH + "/ky-thi";
+export const CREATE_EXAM = SERVER_PATH + "/ky-thi";
+export const DELETE_EXAM = SERVER_PATH + "/ky-thi";
+export const UPDATE_EXAM = SERVER_PATH + "/ky-thi";
+export const GET_EXAM = SERVER_PATH + "/ky-thi";
+
 
 
 export const GET_PROVINCES = SERVER_PATH + "/dia-chi/tinh-thanh-pho";
-export const GET_METHOD_REGISTER = SERVER_PATH + "/form-dang-ky";
+export const GET_DISTRICT = SERVER_PATH + "/dia-chi/quan-huyen";
+export const GET_WARD = SERVER_PATH + "/dia-chi/phuong-xa";
+export const GET_FORM_REGISTER = SERVER_PATH + "/form-dang-ky";
+export const UPDATE_RESULT_FORM = SERVER_PATH + "/form-dang-ky"
+export const GET_TYPE_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
+
+
 module.exports.URL_SERVER = {
     SERVER_PORT
 };

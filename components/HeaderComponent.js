@@ -87,7 +87,9 @@ const HeaderComponent = ({
                                     isCollepse && <Icon
                                         onClick={() => toggleMenu(!isOpenMenu)}
                                         style={{ color: 'white', fontSize: 16, cursor: 'pointer' }}
-                                        type={isOpenMenu ? "menu" : "close"} />
+                                        // type={isOpenMenu ? "menu" : "close"}
+                                        type="menu"
+                                         />
                                 }
                             </Col>
                             <Col xs={21} sm={22} lg={23}>

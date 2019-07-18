@@ -1,85 +1,61 @@
-import React, { Component, Fragment, useState, useEffect } from 'react';
+import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from 'react-redux';
+import { pick } from 'lodash/fp';
 import { Pagination, Icon } from 'antd';
+import { requestAPI } from '../config';
+import { GET_TYPE_REGISTER } from '../constant/UrlApi';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { DELETE_USER, GET_USERS, UPDATE_USER } from '../constant/UrlApi';
-import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { requestAPI } from '../config/index';
-import * as Utils from '../utils/utils';
+import { DIALOG_ERROR, DIALOG_INFO, DIALOG_WARN, DIALOG_SUCCESS } from '../utils/actions';
 import Link from 'next/link';
 
-import TableComponent from './TableComponent';
+import * as Utils from '../utils/utils';
 import HeaderContent from './HeaderContent';
-import RenderColumnComponent from './RenderComlunComponent';
+import Tablecomponent from './TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
-import ConfirmLayout from '../layouts/ConfirmLayout';
+import RenderColumnComponent from './RenderComlunComponent';
+
 const connectToRedux = connect(
-    null,
+    pick(['']),
     dispatch => ({
-        displayDialog: (type, title = "", content = "") => {
-            dispatch({ type: type, payload: { title: title, content: content } })
-        },
         displayNotify: (type, message) => {
-            dispatch({ type: type, payload: { message: message } })
+            dispatch({ type: type, payload: { message: message, options: {} } })
+        },
+        displayDialog: (type, title, content, onOK) => {
+            dispatch({ type: type, payload: { title, content, onOK } })
         }
     })
 )
 
-const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
-    requestAPI({method: 'DELETE' ,url: `${DELETE_USER}/${id}` })
-        .then(({ data }) => {
-            if (data && data.status === 200) {
-                setIsReFetch(!isReFetch);
-                displayNotify(TOAST_SUCCESS, 'Xóa user thành công !')
-            } else {
-                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa user thất bại !')
-            }
-            return;
-        })
-        .catch(() => displayNotify(TOAST_ERROR, 'Xóa user thất bại !'))
-}
-
-const UserComponent = ({ displayNotify }) => {
+const MethodRegisterComponent = ({ displayDialog }) => {
     const [dataSrc, setDataSrc] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [pageSize, setPageSize] = useState(PAGE_SIZE);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [pageSize, setPageSize] = useState(PAGE_SIZE);
+    const [isLoading, setIsLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
-
     const columns = [
         {
             title: 'No.',
             dataIndex: 'key'
         },
         {
-            title: 'Avatar',
-            dataIndex: 'avatar',
-            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
+            title: 'Id',
+            dataIndex: 'id',
+            render: code => <RenderColumnComponent content={code} />
         },
         {
-            title: "User's name",
+            title: 'Name',
             dataIndex: 'name',
             render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Sex',
-            dataIndex: 'gioi_tinh',
-            render: sex => <RenderColumnComponent type="sex" content={sex} />
+            title: 'Method type',
+            dataIndex: 'id_register_method_type',
+            render: type => <RenderColumnComponent content={type} />
             // width: '20%',
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            render: email => <RenderColumnComponent content={email} />
-        },
-        {
-            title: 'Address',
-            dataIndex: 'address',
-            render: address => <RenderColumnComponent content={address} />
-        },
-        {
-            title: 'Date created',
+            title: 'Date create',
             dataIndex: 'created',
             render: created => <RenderColumnComponent type="date" content={created} />
         },
@@ -89,7 +65,7 @@ const UserComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/user/detail?id=" + id} >
+                        <Link href={"/regiter-form/detail?id=" + id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
@@ -103,13 +79,14 @@ const UserComponent = ({ displayNotify }) => {
             },
         },
     ];
+    
 
     useEffect(() => {
         let didCancel = false;
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_USERS}?page_num=${pageIndex}&page_row=${pageSize}`
+            url: `${GET_TYPE_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
@@ -135,11 +112,11 @@ const UserComponent = ({ displayNotify }) => {
     return (
         <Fragment>
             <HeaderContent 
-                isPageSize={true}
-                getPageSize={setPageSize}
-                title="List of users" />
+                isPageSize={true} 
+                getPageSize={setPageSize} 
+                title="List register type" />
             <div className="padding-table">
-                <TableComponent
+                <Tablecomponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
@@ -151,4 +128,5 @@ const UserComponent = ({ displayNotify }) => {
         </Fragment>
     )
 }
-export default connectToRedux(UserComponent);
+
+export default connectToRedux(MethodRegisterComponent)

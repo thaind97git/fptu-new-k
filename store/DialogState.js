@@ -20,16 +20,29 @@ const getDialogFunctionType = type => {
     }
 };
 
+function isEmpty(value) {
+    if(value === null || value === undefined || value === '') {
+        return true;
+    }
+    return false;
+}
+
 export default {
     displayDialog: (state = null, { type, payload }) => {
         if (payload) {
-            const { title, content, onOK } = payload;
-            if (!title || typeof(onOK) !== 'function') {
+            const { title, content, onOK, okText } = payload;
+            if (!title) {
                 return state;
             }
             const doDialog = getDialogFunctionType(type);
             if (doDialog) {
-                doDialog({ title: title, content: content, onOk() { onOK() } })
+                doDialog({ 
+                    title: title, 
+                    content: content, 
+                    onOk() { typeof(onOK) === 'function' ? onOK() : function(){} },
+                    okText: okText || 'OK',
+                    maskClosable: true,
+                })
                 return payload;
             }
         }

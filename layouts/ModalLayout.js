@@ -5,8 +5,8 @@ import ButtonLayout from './ButtonLayout';
 import { DIALOG_SUCCESS, DIALOG_ERROR } from '../utils/actions';
 
 const connectToRedux = connect(null, dispatch => ({
-    displayDialog: (type, title, content) => {
-        dispatch({ type: type, payload: { title: title, content: content } })
+    displayDialog: (type, title, content, onOK) => {
+        dispatch({ type: type, payload: { title, content, onOK } })
     }
 }))
 const ModalLayout = ({
