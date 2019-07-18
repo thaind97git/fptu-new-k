@@ -9,6 +9,7 @@ import { requestAPI } from '../config/index';
 import * as Utils from '../utils/utils';
 import Link from 'next/link';
 
+
 import TableComponent from '../components/TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
 import ConfirmLayout from '../layouts/ConfirmLayout';
@@ -32,14 +33,14 @@ const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
     requestAPI({method: 'DELETE' ,url: `${DELETE_STUDENT}/${id}` })
         .then(({ data }) => {
             if (data && data.status === 200) {
-                displayNotify(TOAST_SUCCESS, 'Delete student success !')
+                displayNotify(TOAST_SUCCESS, 'Xóa sinh viên thành công !')
                 setIsReFetch(!isReFetch);
             } else {
-                displayNotify(TOAST_ERROR, data.errorMessage || 'Delete student fail !')
+                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa sinh viên thất bại !')
             }
             return;
         })
-        .catch(() => displayNotify(TOAST_ERROR, 'Delete student fail !'))
+        .catch(() => displayNotify(TOAST_ERROR, 'Xóa sinh viên thất bại !'))
 }
 
 const StudentComponent = ({ displayNotify }) => {
@@ -67,7 +68,7 @@ const StudentComponent = ({ displayNotify }) => {
         {
             title: 'Birthday',
             dataIndex: 'ngay_sinh',
-            render: bDate => <RenderColumnComponent type="date" content={bDate} />
+            render: bDate => <RenderColumnComponent type="bDate" content={bDate} />
             // width: '20%',
         },
         {

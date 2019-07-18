@@ -1,17 +1,18 @@
-import React, { useEffect, useState, Fragment } from 'react'
-import { connect } from 'react-redux';
-import { pick } from 'lodash/fp';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Pagination, Icon } from 'antd';
-import { requestAPI } from '../config';
-import { GET_TYPE_REGISTER } from '../constant/UrlApi';
+import { pick } from 'lodash/fp';
+import { connect } from 'react-redux';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { DIALOG_ERROR, DIALOG_INFO, DIALOG_WARN, DIALOG_SUCCESS } from '../utils/actions';
+import { GET_EXAMS, DELETE_EXAM } from '../constant/UrlApi';
+import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
+import { requestAPI } from '../config/index';
+import * as Utils from '../utils/utils';
 import Link from 'next/link';
 
-import * as Utils from '../utils/utils';
-import HeaderContent from './HeaderContent';
-import Tablecomponent from './TableComponent';
+import TableComponent from '../components/TableComponent';
 import ButtonLayout from '../layouts/ButtonLayout';
+import ConfirmLayout from '../layouts/ConfirmLayout';
+import HeaderContent from '../components/HeaderContent';
 import RenderColumnComponent from './RenderComlunComponent';
 
 const connectToRedux = connect(
@@ -21,16 +22,31 @@ const connectToRedux = connect(
             dispatch({ type: type, payload: { message: message, options: {} } })
         },
         displayDialog: (type, title, content, onOK) => {
-            dispatch({ type: type, payload: { title, content, onOK } })
-        }
+            dispatch({ type: type, payload: { title: title, content: content, onOK } })
+        },
     })
 )
 
-const MethodRegisterComponent = ({ displayDialog }) => {
+
+const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
+    requestAPI({method: 'DELETE' ,url: `${DELETE_EXAM}/${id}` })
+        .then(({ data }) => {
+            if (data && data.status === 200) {
+                displayNotify(TOAST_SUCCESS, 'Xóa trường học thành công !')
+                setIsReFetch(!isReFetch);
+            } else {
+                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa trường học thất bại !')
+            }
+            return;
+        })
+        .catch(() => displayNotify(TOAST_ERROR, 'Xóa trường học thất bại !'))
+}
+
+const ExamComponent = ({ displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
     const [pageSize, setPageSize] = useState(PAGE_SIZE);
-    const [isLoading, setIsLoading] = useState(false);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
     const columns = [
@@ -39,23 +55,42 @@ const MethodRegisterComponent = ({ displayDialog }) => {
             dataIndex: 'key'
         },
         {
-            title: 'Id',
-            dataIndex: 'id',
-            render: code => <RenderColumnComponent content={code} />
+            title: 'Exam type',
+            dataIndex: 'loai_ky_thi',
+            render: type => <RenderColumnComponent content={type} />
         },
         {
-            title: 'Name',
+            title: 'Exam name',
             dataIndex: 'name',
             render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Method type',
-            dataIndex: 'id_register_method_type',
-            render: type => <RenderColumnComponent content={type} />
-            // width: '20%',
+            title: 'Exam date',
+            dataIndex: 'ngay_thi',
+            render: examDate => <RenderColumnComponent content={examDate} />
         },
         {
-            title: 'Date create',
+            title: 'Exam time',
+            dataIndex: 'gio_thi',
+            render: time => <RenderColumnComponent content={time} />
+        },
+        {
+            title: 'Date start',
+            dataIndex: 'ngay_bat_dau',
+            render: start => <RenderColumnComponent content={start} />
+        },
+        {
+            title: 'Date end',
+            dataIndex: 'ngay_ket_thuc',
+            render: end => <RenderColumnComponent content={end} />
+        },
+        {
+            title: 'Description',
+            dataIndex: 'ghi_chu',
+            render: desc => <RenderColumnComponent content={desc} />
+        },
+        {
+            title: 'Date created',
             dataIndex: 'created',
             render: created => <RenderColumnComponent type="date" content={created} />
         },
@@ -65,7 +100,7 @@ const MethodRegisterComponent = ({ displayDialog }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/regiter-form/detail?id=" + id} >
+                        <Link href={"/school/detail?id=" + id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
@@ -79,18 +114,17 @@ const MethodRegisterComponent = ({ displayDialog }) => {
             },
         },
     ];
-    
-
     useEffect(() => {
         let didCancel = false;
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_TYPE_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
+            url: `${GET_EXAMS}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
                 const rs = await requestAPI(opt);
+                setIsLoading(false);
                 const { result, count } = rs.data.data;
                 Utils.mapIndex(result, (pageIndex - 1) * pageSize)
                 setDataSrc(result);
@@ -98,35 +132,35 @@ const MethodRegisterComponent = ({ displayDialog }) => {
             } catch (error) {
                 console.log(error)
             }
-            setIsLoading(false);
 
         }
         !didCancel && fetchData()
         return () => {
             didCancel = true;
-        };
+        }
     }, [pageIndex, isReFetch, pageSize])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
     }
+
     return (
         <Fragment>
             <HeaderContent 
-                isPageSize={true} 
-                getPageSize={setPageSize} 
-                title="List register type" />
+                title="List of exams"
+                isPageSize={true}
+                getPageSize={setPageSize} />
             <div className="padding-table">
-                <Tablecomponent
+                <TableComponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
                     rowKey={record => record.key} 
                     pageSize={pageSize}
                     onChangePage={getPage}
-                    totalPage={totalPage}/>
+                    totalPage={totalPage}
+                    scrollX={1200}/>
             </div>
         </Fragment>
     )
 }
-
-export default connectToRedux(MethodRegisterComponent)
+export default connectToRedux(ExamComponent);

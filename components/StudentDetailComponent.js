@@ -118,10 +118,10 @@ class StudentDetailComponent extends Component {
         const { span, md, lg } = spanCol;
         const {
             form,
-            listProvinces,
-            listDistricts,
+            listProvinces = [],
+            listDistricts = [],
             student,
-            listWards,
+            listWards = [],
             listSchools,
             adminActions
         } = this.props;
@@ -133,7 +133,7 @@ class StudentDetailComponent extends Component {
                     <div className="padding-table">
                         <Form  {...formItemLayout} onSubmit={this.createStudent}>
                             <div className="card">
-                                <div className="card-header-absolute">Student information :</div>
+                                <div className="card-header-absolute">Information of student :</div>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Student's Name">
@@ -146,7 +146,7 @@ class StudentDetailComponent extends Component {
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
                                         <Form.Item label="Birthday">
                                             {getFieldDecorator('ngay_sinh', {
-                                                initialValue: momentTimeSpanPicker(student.ngay_sinh),
+                                                initialValue: momentTimeSpanPicker(+student.ngay_sinh),
                                                 rules: configRule.birth
                                             })(
                                                 <DatePicker format="DD/MM/YYYY" />
@@ -178,7 +178,7 @@ class StudentDetailComponent extends Component {
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Address ID provided">
                                             {getFieldDecorator('noi_cap', {
-                                                initialValue: student.noi_cap,
+                                                initialValue: +student.noi_cap,
                                                 rules: configRule.addressID
                                             })(
                                                 <Select
@@ -210,8 +210,8 @@ class StudentDetailComponent extends Component {
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Province / City">
-                                            {getFieldDecorator('id_tinh_thanh_pho_lien_he', {
-                                                initialValue: student.id_tinh_thanh_pho_lien_he,
+                                            {getFieldDecorator('id_thanh_pho_lien_he', {
+                                                initialValue: student.id_thanh_pho_lien_he,
                                                 rules: configRule.city
                                             })(
                                                 <Select
@@ -247,6 +247,10 @@ class StudentDetailComponent extends Component {
                                                         adminActions.getListWardsAPI(idDistrict)
                                                     }}>
                                                     {
+                                                        listDistricts.length === 0 ? 
+                                                        <Option value={student.id_quan_huyen_lien_he}>
+                                                            {student.quan_huyen_lien_he}
+                                                        </Option> :
                                                         listDistricts.map((item, index) => {
                                                             return <Option key={index} value={item.id}>
                                                                 {item.name}
@@ -270,6 +274,10 @@ class StudentDetailComponent extends Component {
                                                     optionFilterProp="children"
                                                     placeholder="Please select Ward">
                                                     {
+                                                        listWards.length === 0 ? 
+                                                        <Option value={student.id_phuong_xa_lien_he}>
+                                                            {student.phuong_xa_lien_he}
+                                                        </Option> :
                                                         listWards.map((item, index) => {
                                                             return <Option key={index} value={item.id}>
                                                                 {item.name}
@@ -305,22 +313,10 @@ class StudentDetailComponent extends Component {
                                         </Col>
                                         <Col span={span} md={md} lg={lg}>
                                             <Form.Item label="Hight school">
-                                                {getFieldDecorator('id_tinh_thanh_pho_truong_thpt', {
-                                                    initialValue: student.id_tinh_thanh_pho_truong_thpt,
+                                                {getFieldDecorator('truong_thpt', {
+                                                    initialValue: student.truong_thpt,
                                                 })(
-                                                    <Select
-                                                        showSearch
-                                                        optionFilterProp="children"
-                                                        placeholder="Please select School's City"
-                                                        onChange={(id) => this.onChangeDistrict(id)}>
-                                                        {
-                                                            listWards.map((item, index) => {
-                                                                return <Option key={index} value={item.id}>
-                                                                    {item.name}
-                                                                </Option>
-                                                            })
-                                                        }
-                                                    </Select>
+                                                    <Input />
                                                 )}
                                             </Form.Item>
                                         </Col>

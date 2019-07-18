@@ -60,7 +60,7 @@ const CreateStudentComponent = ({ form, displayNotify, displayDialog }) => {
             <div className="padding-table">
                 <Form  {...formItemLayout2} onSubmit={() => createSchool(event)}>
                     <Row>
-                            <Form.Item label="School's name" hasFeedback>
+                            <Form.Item label="School's name">
                                 {getFieldDecorator('name', {
                                     rules: [
                                         { required: true, message: "Please input major's name !" }

@@ -30,7 +30,7 @@ function isEmpty(value) {
 export default {
     displayDialog: (state = null, { type, payload }) => {
         if (payload) {
-            const { title, content, onOK } = payload;
+            const { title, content, onOK, okText } = payload;
             if (!title) {
                 return state;
             }
@@ -39,7 +39,9 @@ export default {
                 doDialog({ 
                     title: title, 
                     content: content, 
-                    onOk() { typeof(onOK) === 'function' ? onOK() : function(){} } 
+                    onOk() { typeof(onOK) === 'function' ? onOK() : function(){} },
+                    okText: okText || 'OK',
+                    maskClosable: true,
                 })
                 return payload;
             }

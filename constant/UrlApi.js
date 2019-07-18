@@ -34,6 +34,13 @@ export const CREATE_SCHOOL = SERVER_PATH + "/truong-hoc";
 export const DELETE_SCHOOL = SERVER_PATH + "/truong-hoc";
 export const UPDATE_SCHOOL = SERVER_PATH + "/truong-hoc";
 export const GET_SCHOOL = SERVER_PATH + "/truong-hoc";
+/*============EXAM================*/
+export const GET_EXAMS = SERVER_PATH + "/ky-thi";
+export const CREATE_EXAM = SERVER_PATH + "/ky-thi";
+export const DELETE_EXAM = SERVER_PATH + "/ky-thi";
+export const UPDATE_EXAM = SERVER_PATH + "/ky-thi";
+export const GET_EXAM = SERVER_PATH + "/ky-thi";
+
 
 
 export const GET_PROVINCES = SERVER_PATH + "/dia-chi/tinh-thanh-pho";

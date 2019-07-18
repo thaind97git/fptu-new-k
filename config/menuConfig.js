@@ -114,6 +114,26 @@ export const menus = [
             }
         ]
     },
+    {
+        subKey: 'sub8',
+        subIcon: 'calculator',
+        subText: 'Exam',
+        subLink: undefined,
+        subItem: [
+            {
+                itemKey: 'sub8.1',
+                itemLink: '/exam',
+                itemIcon: 'unordered-list',
+                itemText: 'List exams'
+            },
+            {
+                itemKey: 'sub8.2',
+                itemLink: '/exam/create',
+                itemIcon: 'plus-square',
+                itemText: 'Create new exam'
+            }
+        ]
+    },
 ]
 /**
  * Find Parent menu in array menus by path

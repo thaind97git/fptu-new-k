@@ -6,6 +6,8 @@ import { requestAPI } from '../config';
 import { GET_FORM_REGISTER, UPDATE_RESULT_FORM } from '../constant/UrlApi';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DIALOG_INFO, TOAST_SUCCESS, TOAST_ERROR, DIALOG_SUCCESS } from '../utils/actions';
+import { isEmptyObject } from '../utils/utils'
+import { momentTimeSpanInput } from '../utils/dateUtils';
 import Link from 'next/link';
 
 import * as Utils from '../utils/utils';
@@ -21,17 +23,17 @@ const connectToRedux = connect(
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message, options: {} } })
         },
-        displayDialog: (type, title, content, onOK) => {
-            dispatch({ type: type, payload: { title, content, onOK } })
+        displayDialog: (type, title, content, onOK, okText) => {
+            dispatch({ type: type, payload: { title, content, onOK, okText } })
         }
     })
 )
 
-const UpdateResult = ({ 
-    id, 
+const UpdateResult = ({
+    id,
     displayDialog,
-    displayNotify, 
-    isReFetch, 
+    displayNotify,
+    isReFetch,
     setIsReFetch,
     currentValue
 }) => {
@@ -41,14 +43,14 @@ const UpdateResult = ({
             DIALOG_INFO,
             'Update result for form register',
             (<Row>
-                <Select style={{width: '100%'}} defaultValue={currentValue} onChange={(e) => currentValue = e}>
+                <Select style={{ width: '100%' }} defaultValue={currentValue} onChange={(e) => currentValue = e}>
                     <Option value="pass">Pass</Option>
                     <Option value="fail">Fail</Option>
                 </Select>
             </Row>),
             () => {
-                const opt = { 
-                    method: 'PUT', 
+                const opt = {
+                    method: 'PUT',
                     url: `${UPDATE_RESULT_FORM}/${id}/ket-qua`,
                     data: {
                         name: currentValue
@@ -67,10 +69,48 @@ const UpdateResult = ({
                     }
                     return;
                 })
-                .catch(() => displayNotify(TOAST_ERROR, 'Cập nhật kết quả thất bại !'))
+                    .catch(() => displayNotify(TOAST_ERROR, 'Cập nhật kết quả thất bại !'))
             }
+        , 'Update result')
+    )
+}
+
+const DetailExample = ({ ky_thi, displayDialog }) => {
+    return (
+        displayDialog(DIALOG_INFO, 'Detail exam',
+            <Fragment>
+                <Row>
+                    Exam name:
+                    <Input disabled defaultValue={ky_thi.name} />
+                </Row>
+                <br/>
+                <Row>
+                    Test time:
+                    <Input disabled defaultValue={ky_thi.gio_thi} />
+                </Row>
+                <br/>
+                <Row>
+                    Test date:
+                    <Input disabled defaultValue={ky_thi.ngay_thi} />
+                </Row>
+                <br/>
+                <Row>
+                    Start date:
+                    <Input disabled defaultValue={momentTimeSpanInput(ky_thi.ngay_bat_dau)} />
+                </Row>
+                <br/>
+                <Row>
+                    End date:
+                    <Input disabled defaultValue={momentTimeSpanInput(ky_thi.ngay_ket_thuc)} />
+                </Row>
+                <br/>
+                <Row>
+                    Type exam:
+                    <Input disabled defaultValue={ky_thi.loai_ky_thi} />
+                </Row>
+            </Fragment>
         )
-    )   
+    )
 }
 
 const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
@@ -89,9 +129,9 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             title: 'Code',
             dataIndex: 'code',
             render: code => //<RenderColumnComponent content={code} />
-                <ButtonLayout 
-                    onClick={() => displayDialog(DIALOG_SUCCESS, 'Code: ', <RenderColumnComponent content={code} />)} 
-                    size="small" 
+                <ButtonLayout
+                    onClick={() => displayDialog(DIALOG_SUCCESS, 'Code: ', <RenderColumnComponent content={code} />)}
+                    size="small"
                     text={<Icon type="plus-circle" theme="twoTone" />} />
         },
         {
@@ -124,35 +164,37 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             dataIndex: 'ket_qua.name',
             render: (result, row, index) => (
                 <Row>
-                    <Row style={{textAlign: 'center'}}>
+                    <Row style={{ textAlign: 'center' }}>
                         <RenderColumnComponent type="result" content={result} />
                     </Row>
-                    <Row>
-                        <ButtonLayout 
-                        onClick={() => 
-                            UpdateResult({
-                                id: row.id, 
-                                displayDialog, 
-                                displayNotify, 
-                                isReFetch, 
-                                setIsReFetch, 
-                                currentValue: result
-                            })
-                        } 
-                        type="primary" size="small" text="Update"  />
+                    <Row style={{ textAlign: 'center' }}>
+                        <ButtonLayout
+                            onClick={() =>
+                                UpdateResult({
+                                    id: row.id,
+                                    displayDialog,
+                                    displayNotify,
+                                    isReFetch,
+                                    setIsReFetch,
+                                    currentValue: result
+                                })
+                            }
+                            type="primary" size="small" text="Update" />
                     </Row>
                 </Row>
-                )
+            )
         },
         {
             title: 'Exam',
             dataIndex: 'ky_thi',
-            render: exam => 
-                <ButtonLayout 
+            render: exam => isEmptyObject(exam) ? 
+                <Row style={{ textAlign: 'center' }}><ButtonLayout size="small" text="Update exam" /></Row> :
+                <Row style={{ textAlign: 'center' }}> <ButtonLayout
                     isDisabled={false}
-                    onClick={() => {}} 
-                    size="small" 
-                    text={<Icon type="plus-circle" theme="twoTone" />} />
+                    onClick={() => DetailExample({ky_thi: exam, displayDialog})}
+                    size="small"
+                    type="primary"
+                    text=" View detail " /></Row>
         },
         {
             title: 'Email',
@@ -169,28 +211,28 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             dataIndex: 'created',
             render: created => <RenderColumnComponent type="date" content={created} />
         },
-        {
-            title: 'Edit',
-            dataIndex: 'id',
-            render: (id, row, index) => {
-                return (
-                    <Fragment>
-                        <Link href={"/regiter-form/detail?id=" + id} >
-                        <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
-                        </Link>
-                    </Fragment>
-                )
-            },
-        },
+        // {
+        //     title: 'Edit',
+        //     dataIndex: 'id',
+        //     render: (id, row, index) => {
+        //         return (
+        //             <Fragment>
+        //                 <Link href={"/regiter-form/detail?id=" + id} >
+        //                     <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
+        //                 </Link>
+        //             </Fragment>
+        //         )
+        //     },
+        // },
     ];
-    
+
 
     useEffect(() => {
         let didCancel = false;
         setIsLoading(true);
         const opt = {
-            method: 'GET' ,
-            url: `${GET_FORM_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
+            method: 'GET',
+            url: `${GET_FORM_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}`
         }
         const fetchData = async () => {
             try {
@@ -215,9 +257,9 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
     }
     return (
         <Fragment>
-            <HeaderContent 
-                isPageSize={true} 
-                getPageSize={setPageSize} 
+            <HeaderContent
+                isPageSize={true}
+                getPageSize={setPageSize}
                 title="List register form" />
             <div className="padding-table">
                 <Tablecomponent
@@ -225,10 +267,10 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
                     isLoading={isLoading}
                     data={dataSrc}
                     rowKey={record => record.key}
-                    scrollX={1600} 
+                    scrollX={1600}
                     pageSize={pageSize}
                     onChangePage={getPage}
-                    totalPage={totalPage}/>
+                    totalPage={totalPage} />
             </div>
         </Fragment>
     )

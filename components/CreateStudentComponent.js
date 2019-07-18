@@ -216,7 +216,7 @@ class CreateStudentComponent extends Component {
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Phone number" hasFeedback>
+                                <Form.Item label="Phone number">
                                     {getFieldDecorator('phone', {
                                         rules: configRule.phone
                                     })(
@@ -227,12 +227,12 @@ class CreateStudentComponent extends Component {
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Address street" hasFeedback>
+                                <Form.Item label="Address street">
                                     {getFieldDecorator('so_nha_ten_duong')(<Input />)}
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Full address" hasFeedback>
+                                <Form.Item label="Full address">
                                     {getFieldDecorator('dia_chi_day_du')(
                                         <Input />
                                     )}
@@ -272,7 +272,7 @@ class CreateStudentComponent extends Component {
                         <div className="card-header-absolute">Social network of student :</div>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Email" hasFeedback>
+                                <Form.Item label="Email">
                                     {getFieldDecorator('email', {
                                         rules: configRule.email
                                     })(
@@ -281,14 +281,14 @@ class CreateStudentComponent extends Component {
                                 </Form.Item>
                             </Col>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Facebook" hasFeedback>
+                                <Form.Item label="Facebook">
                                     {getFieldDecorator('facebook')(<Input />)}
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={span} md={md} lg={lg}>
-                                <Form.Item label="Zalo" hasFeedback>
+                                <Form.Item label="Zalo">
                                     {getFieldDecorator('zalo')(
                                         <Input />
                                     )}

@@ -123,10 +123,10 @@ class StudentDetailComponent extends Component {
                     <div className="padding-table">
                         <Form  {...formItemLayout} onSubmit={this.updateUser}>
                             <div className="card">
-                                <div className="card-header-absolute">User's information :</div>
+                                <div className="card-header-absolute">Information of user :</div>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Student's Name" hasFeedback>
+                                        <Form.Item label="Student's Name">
                                             {getFieldDecorator('name', {
                                                 initialValue: user.name,
                                                 rules: configRule.name
@@ -134,7 +134,7 @@ class StudentDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
-                                        <Form.Item label="Birthday" hasFeedback>
+                                        <Form.Item label="Birthday">
                                             {getFieldDecorator('ngay_sinh', {
                                                 initialValue: momentTimeSpanPicker(user.ngay_sinh),
                                                 rules: configRule.birth
@@ -146,7 +146,7 @@ class StudentDetailComponent extends Component {
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="ID Card" hasFeedback>
+                                        <Form.Item label="ID Card">
                                             {getFieldDecorator('cmnd', {
                                                 initialValue: user.cmnd,
                                                 rules: configRule.cmnd
@@ -154,7 +154,7 @@ class StudentDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
-                                        <Form.Item label="Date ID provided" hasFeedback>
+                                        <Form.Item label="Date ID provided">
                                             {getFieldDecorator('ngay_cap', {
                                                 initialValue: momentDatePicker(user.ngay_cap),
                                                 rules: configRule.dateProvided
@@ -166,9 +166,9 @@ class StudentDetailComponent extends Component {
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Address ID provided" hasFeedback>
+                                        <Form.Item label="Address ID provided">
                                             {getFieldDecorator('noi_cap', {
-                                                initialValue: user.noi_cap,
+                                                initialValue: +user.noi_cap,
                                                 rules: configRule.addressID,
                                             })(
                                                 <Select
@@ -178,7 +178,7 @@ class StudentDetailComponent extends Component {
                                                     {
                                                         listProvinces.map(item => {
                                                             return <Option key={item.id} value={item.id}>
-                                                                {item.id + '. ' + item.name}
+                                                                {item.name}
                                                             </Option>
                                                         })
                                                     }
@@ -187,7 +187,7 @@ class StudentDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Phone number" hasFeedback>
+                                        <Form.Item label="Phone number">
                                             {getFieldDecorator('phone', {
                                                 initialValue: user.phone,
                                                 rules: configRule.phone
@@ -199,7 +199,7 @@ class StudentDetailComponent extends Component {
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Email" hasFeedback>
+                                        <Form.Item label="Email">
                                             {getFieldDecorator('email', {
                                                 initialValue: user.email,
                                                 rules: configRule.email
@@ -207,7 +207,7 @@ class StudentDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Date created" hasFeedback>
+                                        <Form.Item label="Date created">
                                             {getFieldDecorator('created', {
                                                 initialValue: momentDateUser(user.created)
                                             })(

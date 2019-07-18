@@ -29,13 +29,13 @@ export const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
         sm: { span: 6 },
-        md: { span: 4 },
+        md: { span: 6 },
         lg: { span: 7 }
     },
     wrapperCol: {
         xs: { span: 24 },
         sm: { span: 18 },
-        md: { span: 20 },
+        md: { span: 18 },
         lg: { span: 17 }
     }
 }

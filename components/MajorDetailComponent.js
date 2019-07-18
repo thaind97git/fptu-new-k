@@ -119,7 +119,7 @@ class MajorDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Major's Name" hasFeedback>
+                                        <Form.Item label="Major's Name">
                                             {getFieldDecorator('name', {
                                                 initialValue: major.name,
                                                 rules: configRule.name
@@ -129,7 +129,7 @@ class MajorDetailComponent extends Component {
                                 </Row>
                                 <Row>
                                     <Col span={span} md={md} lg={lg}>
-                                        <Form.Item label="Group's major" hasFeedback>
+                                        <Form.Item label="Group's major">
                                             {getFieldDecorator('nhom_nganh', {
                                                 initialValue: major.nhom_nganh,
                                                 rules: configRule.group
@@ -137,7 +137,7 @@ class MajorDetailComponent extends Component {
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
-                                        <Form.Item label="Subject combination" hasFeedback>
+                                        <Form.Item label="Subject combination">
                                             {getFieldDecorator('to_hop_mon', {
                                                 initialValue: major.to_hop_mon,
                                                 rules: configRule.to_hop

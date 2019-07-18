@@ -123,14 +123,14 @@ class CreateUserComponent extends Component {
                             <div className="card-header-absolute">Account of employee :</div>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Username" hasFeedback>
+                                    <Form.Item label="Username">
                                         {getFieldDecorator('username', {
                                             rules: configRule.username
                                         })(<Input placeholder="Please input username" />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Password" hasFeedback>
+                                    <Form.Item label="Password">
                                         {getFieldDecorator('password', {
                                             rules: configRule.password
                                         })(<Input.Password placeholder="Please input password" />)}
@@ -139,7 +139,7 @@ class CreateUserComponent extends Component {
                             </Row>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Confirm password" hasFeedback>
+                                    <Form.Item label="Confirm password">
                                         {getFieldDecorator('confirm', {
                                             rules: configRule.confirm
                                         })(<Input.Password placeholder="Please input confirm password"/>)}
@@ -151,7 +151,7 @@ class CreateUserComponent extends Component {
                             <div className="card-header-absolute">Information of employee :</div>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Name of user" hasFeedback>
+                                    <Form.Item label="Name of user">
                                         {getFieldDecorator('name', {
                                             rules: configRule.name
                                         })(<Input placeholder="Please input name of user"/>)}
@@ -169,14 +169,14 @@ class CreateUserComponent extends Component {
                             </Row>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="ID Card" hasFeedback>
+                                    <Form.Item label="ID Card">
                                         {getFieldDecorator('cmnd', {
                                             rules: configRule.cmnd
                                         })(<Input placeholder="Please input ID Card of user"/>)}
                                     </Form.Item>
                                 </Col>
                                 <Col style={{ textAlign: 'left' }} span={span} md={md} lg={lg}>
-                                    <Form.Item label="Date ID provided" hasFeedback>
+                                    <Form.Item label="Date ID provided">
                                         {getFieldDecorator('ngay_cap', {
                                             rules: configRule.dateProvided
                                         })(
@@ -187,7 +187,7 @@ class CreateUserComponent extends Component {
                             </Row>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Address ID provided" hasFeedback>
+                                    <Form.Item label="Address ID provided">
                                         {getFieldDecorator('noi_cap', {
                                             rules: configRule.addressID
                                         })(
@@ -207,7 +207,7 @@ class CreateUserComponent extends Component {
                                     </Form.Item>
                                 </Col>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Phone number" hasFeedback>
+                                    <Form.Item label="Phone number">
                                         {getFieldDecorator('phone', {
                                             rules: configRule.phone
                                         })(
@@ -218,7 +218,7 @@ class CreateUserComponent extends Component {
                             </Row>
                             <Row>
                                 <Col span={span} md={md} lg={lg}>
-                                    <Form.Item label="Email" hasFeedback>
+                                    <Form.Item label="Email">
                                         {getFieldDecorator('email', {
                                             rules: configRule.email
                                         })(
