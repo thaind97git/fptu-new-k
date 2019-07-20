@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { REQUEST_OPTION_DEFAULT } from './options';
-import provinces from './provinces' 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 export const requestAPI = ({ 
@@ -49,5 +48,3 @@ export const DEFAULT_PAGING = {
     pageSize: 10,
     pageIndex: 1
 }
-
-export const Provinces = provinces

@@ -1,13 +1,12 @@
 import { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Select, DatePicker, TimePicker } from 'antd';
-import HeaderContent from '../components/HeaderContent';
-import { CREATE_EXAM } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { TO_HOP_MON } from '../constant/constants';
+import HeaderContent from '../HeaderContent';
+import { CREATE_EXAM } from '../../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR } from '../../utils/actions';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
 import Router from 'next/router';
-import { formatDateServer, formatTimeServer } from '../utils/dateUtils';
+import { formatDateServer, formatTimeServer } from '../../utils/dateUtils';
 
 const { Option } = Select;
 const connectToRedux = connect(null, dispatch => ({

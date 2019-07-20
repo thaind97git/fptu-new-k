@@ -37,7 +37,6 @@ const UpdateResult = ({
     setIsReFetch,
     currentValue
 }) => {
-    console.log(currentValue)
     return (
         displayDialog(
             DIALOG_INFO,

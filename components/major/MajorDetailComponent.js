@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Radio, Select } from 'antd';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { momentDateUser, formatDateServer } from '../utils/dateUtils';
-import { TO_HOP_MON } from '../constant/constants';
-import { GET_MAJOR, UPDATE_MAJOR } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
-import HeaderContent from './HeaderContent';
-import MissinginforComponent from './MissinginforComponent';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
+import { momentDateUser, formatDateServer } from '../../utils/dateUtils';
+import { TO_HOP_MON } from '../../constant/constants';
+import { GET_MAJOR, UPDATE_MAJOR } from '../../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../../utils/actions';
+import HeaderContent from '../HeaderContent';
+import MissinginforComponent from '../MissinginforComponent';
 
 const { Option } = Select;
 const connectToRedux = connect(null, dispatch => ({

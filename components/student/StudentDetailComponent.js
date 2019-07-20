@@ -14,14 +14,14 @@ import {
     Avatar,
     Select
 } from 'antd';
-import * as AdminState from '../store/AdminState';
-import * as StudentState from '../store/StudentState';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { GET_STUDENT, UPDATE_STUDENT, GET_PROVINCES } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR, TOAST_SUCCESS } from '../utils/actions';
-import { formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../utils/dateUtils';
-import HeaderContent from './HeaderContent';
-import NotFoundComponent from './MissinginforComponent';
+import * as AdminState from '../../store/AdminState';
+import * as StudentState from '../../store/StudentState';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
+import { GET_STUDENT, UPDATE_STUDENT, GET_PROVINCES } from '../../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR, TOAST_SUCCESS } from '../../utils/actions';
+import { formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../../utils/dateUtils';
+import HeaderContent from '../HeaderContent';
+import NotFoundComponent from '../MissinginforComponent';
 
 const { Option } = Select;
 const connectToRedux = connect(
@@ -178,7 +178,7 @@ class StudentDetailComponent extends Component {
                                     <Col span={span} md={md} lg={lg}>
                                         <Form.Item label="Address ID provided">
                                             {getFieldDecorator('noi_cap', {
-                                                initialValue: +student.noi_cap,
+                                                initialValue: student.noi_cap ? +student.noi_cap : "",
                                                 rules: configRule.addressID
                                             })(
                                                 <Select
@@ -293,8 +293,8 @@ class StudentDetailComponent extends Component {
                                     <Row>
                                         <Col span={span} md={md} lg={lg}>
                                             <Form.Item label="Area hight school">
-                                                {getFieldDecorator('id_truong_thpt', {
-                                                    initialValue: student.id_truong_thpt
+                                                {getFieldDecorator('id_tinh_thanh_pho_truong_thpt', {
+                                                    initialValue: student.id_tinh_thanh_pho_truong_thpt
                                                 })(
                                                     <Select
                                                         showSearch

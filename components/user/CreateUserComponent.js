@@ -4,12 +4,12 @@ import { pick } from 'lodash/fp';
 import Router from 'next/router';
 import { bindActionCreators } from 'redux';
 import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Select } from 'antd';
-import * as AdminState from '../store/AdminState';
-import HeaderContent from '../components/HeaderContent';
-import { CREATE_USER } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { formatDateServer } from '../utils/dateUtils';
+import * as AdminState from '../../store/AdminState';
+import HeaderContent from '../HeaderContent';
+import { CREATE_USER } from '../../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../../utils/actions';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
+import { formatDateServer } from '../../utils/dateUtils';
 
 const { Option } = Select;
 const connectToRedux = connect(pick(['listProvinces']), dispatch => ({
