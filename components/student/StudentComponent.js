@@ -1,92 +1,90 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Pagination, Row, Col, Input, Form, Checkbox, Icon, Tag } from 'antd';
+import { Pagination, Icon } from 'antd';
 import { pick } from 'lodash/fp';
 import { connect } from 'react-redux';
-import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { DELETE_MAJOR, GET_MAJOR, UPDATE_MAJOR } from '../constant/UrlApi';
-import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { requestAPI } from '../config/index';
-import * as Utils from '../utils/utils';
+import { PAGE_SIZE, PAGE_INDEX } from '../../constant/constants';
+import { GET_STUDENTS, DELETE_STUDENT } from '../../constant/UrlApi';
+import { TOAST_SUCCESS, TOAST_ERROR } from '../../utils/actions';
+import { requestAPI } from '../../config/index';
+import * as Utils from '../../utils/utils';
 import Link from 'next/link';
 
 
-import TableComponent from './TableComponent';
+import TableComponent from '../TableComponent';
+import ButtonLayout from '../../layouts/ButtonLayout';
+import ConfirmLayout from '../../layouts/ConfirmLayout';
+import HeaderContent from '../HeaderContent';
+import RenderColumnComponent from '../RenderComlunComponent';
 
-import ButtonLayout from '../layouts/ButtonLayout';
-import ConfirmLayout from '../layouts/ConfirmLayout';
-import HeaderContent from './HeaderContent';
-import RenderColumnComponent from './RenderComlunComponent';
 const connectToRedux = connect(
-    pick(['isLoading']),
+    null,
     dispatch => ({
         displayDialog: (type, title = "", content = "") => {
             dispatch({ type: type, payload: { title: title, content: content } })
         },
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message } })
-        },
+        }
     })
 )
 
+
 const Delete = (id, displayNotify, isReFetch, setIsReFetch) => {
-    requestAPI({method: 'DELETE' ,url: `${DELETE_MAJOR}/${id}` })
+    requestAPI({method: 'DELETE' ,url: `${DELETE_STUDENT}/${id}` })
         .then(({ data }) => {
             if (data && data.status === 200) {
-                displayNotify(TOAST_SUCCESS, 'Xóa ngành học thành công !')
+                displayNotify(TOAST_SUCCESS, 'Xóa sinh viên thành công !')
                 setIsReFetch(!isReFetch);
             } else {
-                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa ngành học thất bại !')
+                displayNotify(TOAST_ERROR, data.errorMessage || 'Xóa sinh viên thất bại !')
             }
             return;
         })
-        .catch(() => displayNotify(TOAST_ERROR, 'Xóa ngành học thất bại !'))
+        .catch(() => displayNotify(TOAST_ERROR, 'Xóa sinh viên thất bại !'))
 }
 
-const MajorComponent = ({ displayNotify }) => {
+const StudentComponent = ({ displayNotify }) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
+    const [isLoading, setIsLoading] = useState(false);
     const [pageSize, setPageSize] = useState(PAGE_SIZE);
     const [totalPage, setTotalPage] = useState(0);
     const [isReFetch, setIsReFetch] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const columns = [
         {
             title: 'No.',
             dataIndex: 'key'
         },
         {
-            title: 'Major name',
+            title: 'Avatar',
+            dataIndex: 'avatar',
+            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
+        },
+        {
+            title: 'Student name',
             dataIndex: 'name',
             render: name => <RenderColumnComponent content={name} />
         },
         {
-            title: 'Major code',
-            dataIndex: 'ma_nganh',
-            render: code => <RenderColumnComponent content={code} />
+            title: 'Birthday',
+            dataIndex: 'ngay_sinh',
+            render: bDate => <RenderColumnComponent type="bDate" content={bDate} />
             // width: '20%',
         },
         {
-            title: 'Major group',
-            dataIndex: 'nhom_nganh',
-            render: group => <RenderColumnComponent content={group} />
+            title: 'Email',
+            dataIndex: 'email',
+            render: email => <RenderColumnComponent content={email} />
         },
         {
-            title: 'Subject combination',
-            dataIndex: 'to_hop_mon',
-            render: tags => (
-                <span>
-                  {tags.map(tag => (
-                    <Tag color="blue" key={tag}>
-                      {tag}
-                    </Tag>
-                  ))}
-                </span>
-              )
+            title: 'Full Address',
+            dataIndex: 'dia_chi_day_du',
+            render: address => <RenderColumnComponent content={address} />
         },
         {
-            title: 'Date create',
-            dataIndex: 'created',
-            render: created => <RenderColumnComponent type="date" content={created} />
+            title: 'Phone number',
+            dataIndex: 'phone',
+            render: phone => <RenderColumnComponent content={phone} />
         },
         {
             title: 'Edit',
@@ -94,14 +92,13 @@ const MajorComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/major/detail?id=" + id} >
+                        <Link href={"/student/detail?id=" + id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
                             onClick={() => ConfirmLayout({
                                 title: 'Delete', content: 'Do you want delete this record ?',
-                                okText: 'Delete', cancelText: 'No', 
-                                functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
+                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
                             })} size="small" value={id} type="danger" text="Delete"
                         />
                     </Fragment>
@@ -109,13 +106,12 @@ const MajorComponent = ({ displayNotify }) => {
             },
         },
     ];
-    
-
     useEffect(() => {
+        let didCancel = false;
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_MAJOR}?page_num=${pageIndex}&page_row=${pageSize}` 
+            url: `${GET_STUDENTS}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {
@@ -130,29 +126,33 @@ const MajorComponent = ({ displayNotify }) => {
             }
 
         }
-        fetchData()
+        !didCancel && fetchData()
+        return () => {
+            didCancel = true;
+        };
     }, [pageIndex, isReFetch, pageSize])
     const getPage = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
     }
+
     return (
         <Fragment>
             <HeaderContent 
-                title="List of majors" 
-                isPageSize={true}
-                getPageSize={setPageSize}/>
+                getPageSize={setPageSize} 
+                isPageSize={true} 
+                title="List of students" />
             <div className="padding-table">
                 <TableComponent
                     columns={columns}
                     isLoading={isLoading}
                     data={dataSrc}
-                    rowKey={record => record.key} 
+                    rowKey={record => record.key}
+                    scrollX={1100}
                     pageSize={pageSize}
                     onChangePage={getPage}
-                    totalPage={totalPage} />
+                    totalPage={totalPage}/>
             </div>
         </Fragment>
     )
 }
-const WrappedMajor = Form.create()(MajorComponent)
-export default connectToRedux(WrappedMajor);
+export default connectToRedux(StudentComponent);

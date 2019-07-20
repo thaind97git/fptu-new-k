@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminPageLayout from '../../layouts/AdminPageLayout';
 import AuthenHOC from '../../HOC/authenHOC';
-import ExamComponent from '../../components/ExamComponent';
+import ExamComponent from '../../components/exam/ExamComponent';
 
 const ExamLayout = (rootProps) => {
     return (
