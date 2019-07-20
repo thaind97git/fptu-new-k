@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Checkbox, DatePicker, Upload, Icon, Radio, Avatar, Select } from 'antd';
 import { pick } from 'lodash/fp';
 import { bindActionCreators } from 'redux';
-import * as AdminState from '../store/AdminState';
-import HeaderContent from './HeaderContent';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { GET_USER, UPDATE_USER, GET_PROVINCES } from '../constant/UrlApi';
-import MissinginforComponent from './MissinginforComponent';
-import AvatarComponent from './AvatarComponent';
-import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../utils/actions';
-import { momentDateUser, formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../utils/dateUtils';
+import * as AdminState from '../../store/AdminState';
+import HeaderContent from '../HeaderContent';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
+import { GET_USER, UPDATE_USER, GET_PROVINCES } from '../../constant/UrlApi';
+import MissinginforComponent from '../MissinginforComponent';
+import AvatarComponent from '../AvatarComponent';
+import { DIALOG_SUCCESS, TOAST_ERROR, DIALOG_ERROR } from '../../utils/actions';
+import { momentDateUser, formatDateServer, momentDatePicker, momentTimeSpanPicker } from '../../utils/dateUtils';
 
 const { Option } = Select;
 const connectToRedux = connect(

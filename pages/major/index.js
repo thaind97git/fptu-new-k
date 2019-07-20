@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminPageLayout from '../../layouts/AdminPageLayout';
 import AuthenHOC from '../../HOC/authenHOC';
-import MajorComponent from '../../components/MajorComponent';
+import MajorComponent from '../../components/major/MajorComponent';
 
 const MajorLayout = (rootProps) => {
     return (

@@ -1,11 +1,11 @@
 import { Fragment, useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Col, Row, Select } from 'antd';
-import HeaderContent from '../components/HeaderContent';
-import { CREATE_MAJOR } from '../constant/UrlApi';
-import { DIALOG_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { requestAPI, formItemLayout, spanCol } from '../config';
-import { TO_HOP_MON } from '../constant/constants';
+import HeaderContent from '../HeaderContent';
+import { CREATE_MAJOR } from '../../constant/UrlApi';
+import { DIALOG_SUCCESS, TOAST_ERROR } from '../../utils/actions';
+import { requestAPI, formItemLayout, spanCol } from '../../config';
+import { TO_HOP_MON } from '../../constant/constants';
 import Router from 'next/router';
 
 const { Option } = Select;

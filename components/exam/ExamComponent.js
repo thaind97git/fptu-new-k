@@ -2,18 +2,18 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Pagination, Icon } from 'antd';
 import { pick } from 'lodash/fp';
 import { connect } from 'react-redux';
-import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
-import { GET_EXAMS, DELETE_EXAM } from '../constant/UrlApi';
-import { TOAST_SUCCESS, TOAST_ERROR } from '../utils/actions';
-import { requestAPI } from '../config/index';
-import * as Utils from '../utils/utils';
+import { PAGE_SIZE, PAGE_INDEX } from '../../constant/constants';
+import { GET_EXAMS, DELETE_EXAM } from '../../constant/UrlApi';
+import { TOAST_SUCCESS, TOAST_ERROR } from '../../utils/actions';
+import { requestAPI } from '../../config/index';
+import * as Utils from '../../utils/utils';
 import Link from 'next/link';
 
-import TableComponent from '../components/TableComponent';
-import ButtonLayout from '../layouts/ButtonLayout';
-import ConfirmLayout from '../layouts/ConfirmLayout';
-import HeaderContent from '../components/HeaderContent';
-import RenderColumnComponent from './RenderComlunComponent';
+import TableComponent from '../TableComponent';
+import ButtonLayout from '../../layouts/ButtonLayout';
+import ConfirmLayout from '../../layouts/ConfirmLayout';
+import HeaderContent from '../HeaderContent';
+import RenderColumnComponent from '../RenderComlunComponent';
 
 const connectToRedux = connect(
     pick(['']),
