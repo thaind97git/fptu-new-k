@@ -42,21 +42,15 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
         e.preventDefault();
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                const majorObj = {
-                    ma_nganh,
-                    nhom_nganh,
-                    name,
-                    to_hop_mon: values.to_hop_mon.join(','),
-                    creator: 0,
-                    created: new Date().getTime(),
-                    status: 1
-                }
+                values.to_hop_mon = values.to_hop_mon.join(',');
+                values.created = new Date().getTime()
                 setLoadingButton(true);
                 const opt = {
                     url: CREATE_MAJOR,
                     method: 'POST',
-                    data: majorObj
+                    data: values
                 }
+                console.log(values)
                 requestAPI(opt)
                     .then(({ data }) => {
                         setLoadingButton(false)
@@ -67,7 +61,7 @@ const CreateMajorComponent = ({ form, displayNotify, displayDialog }) => {
                         }
                     }).catch(({ response }) => {
                         setLoadingButton(false)
-                        response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
+                        response && displayNotify(TOAST_ERROR, response.errorMessage || 'Có lỗi xảy ra')
                     })
             }
         });

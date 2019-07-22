@@ -224,8 +224,8 @@ class StudentDetailComponent extends Component {
                                                 rules: configRule.sex
                                             })(
                                                 <Radio.Group>
-                                                    <Radio value={1}>Fmale</Radio>
-                                                    <Radio value={2}>Male</Radio>
+                                                    <Radio value={2}>Fmale</Radio>
+                                                    <Radio value={1}>Male</Radio>
                                                 </Radio.Group>
                                             )}
                                         </Form.Item>
