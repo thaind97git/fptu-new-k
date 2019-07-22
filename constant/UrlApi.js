@@ -48,6 +48,7 @@ export const GET_DISTRICT = SERVER_PATH + "/dia-chi/quan-huyen";
 export const GET_WARD = SERVER_PATH + "/dia-chi/phuong-xa";
 export const GET_FORM_REGISTER = SERVER_PATH + "/form-dang-ky";
 export const UPDATE_RESULT_FORM = SERVER_PATH + "/form-dang-ky"
+export const UPDATE_EXAM_FORM = SERVER_PATH + "/form-dang-ky";
 export const GET_TYPE_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
 
 

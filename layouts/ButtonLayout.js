@@ -38,6 +38,7 @@ const ButtonLayout = ({
                 }
                 .small {
                     padding: 2px 4px;
+                    font-size: 12px;
                 }
                 .big {
                     padding: 12px 24px;
