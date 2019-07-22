@@ -1,4 +1,4 @@
-const HTTP = "http://";
+const HTTP = "https://";
 const PORT = ":3000";
 // const SERVER_IP = "192.168.2.105:8000";
 // 172.20.10.11
