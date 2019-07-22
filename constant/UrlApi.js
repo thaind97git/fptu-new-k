@@ -1,9 +1,11 @@
-const HTTP = "http://";
+const HTTP = "https://";
 const PORT = ":3000";
 // const SERVER_IP = "192.168.2.105:8000";
 // 172.20.10.11
 // localhost
-const SERVER_IP = "localhost";
+// myip
+const SERVER_IP = "172.20.10.2";
+// const SERVER_IP = "localhost";
 const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
 const SERVER_PORT = PORT;
