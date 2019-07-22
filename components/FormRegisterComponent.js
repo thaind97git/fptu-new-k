@@ -1,14 +1,15 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { pick } from 'lodash/fp';
-import { Pagination, Icon, Row, Input, Select } from 'antd';
+import { Icon, Row, Input, Select } from 'antd';
 import { requestAPI } from '../config';
-import { GET_FORM_REGISTER, UPDATE_RESULT_FORM } from '../constant/UrlApi';
+import { GET_FORM_REGISTER, UPDATE_RESULT_FORM, UPDATE_EXAM_FORM } from '../constant/UrlApi';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DIALOG_INFO, TOAST_SUCCESS, TOAST_ERROR, DIALOG_SUCCESS } from '../utils/actions';
 import { isEmptyObject } from '../utils/utils'
 import { momentTimeSpanInput } from '../utils/dateUtils';
-import Link from 'next/link';
+import * as AdminState from '../store/AdminState';
 
 import * as Utils from '../utils/utils';
 import HeaderContent from './HeaderContent';
@@ -18,12 +19,13 @@ import RenderColumnComponent from './RenderComlunComponent';
 
 const { Option } = Select;
 const connectToRedux = connect(
-    pick(['']),
+    pick(['listExams']),
     dispatch => ({
+        adminActions: bindActionCreators(AdminState, dispatch),
         displayNotify: (type, message) => {
             dispatch({ type: type, payload: { message: message, options: {} } })
         },
-        displayDialog: (type, title, content, onOK, okText) => {
+        displayDialog: ({ type, title, content, onOK, okText }) => {
             dispatch({ type: type, payload: { title, content, onOK, okText } })
         }
     })
@@ -38,16 +40,16 @@ const UpdateResult = ({
     currentValue
 }) => {
     return (
-        displayDialog(
-            DIALOG_INFO,
-            'Update result for form register',
-            (<Row>
+        displayDialog({
+            type: DIALOG_INFO,
+            title: 'Update result for form register',
+            content: (<Row>
                 <Select style={{ width: '100%' }} defaultValue={currentValue} onChange={(e) => currentValue = e}>
                     <Option value="pass">Pass</Option>
                     <Option value="fail">Fail</Option>
                 </Select>
             </Row>),
-            () => {
+            onOK: () => {
                 const opt = {
                     method: 'PUT',
                     url: `${UPDATE_RESULT_FORM}/${id}/ket-qua`,
@@ -70,49 +72,119 @@ const UpdateResult = ({
                 })
                     .catch(() => displayNotify(TOAST_ERROR, 'Cập nhật kết quả thất bại !'))
             }
-        , 'Update result')
+            , okText: 'Update result'
+        })
     )
+}
+
+const UpdateExam = ({
+    displayDialog,
+    listExams,
+    currentExam,
+    displayNotify,
+    id,
+    isReFetch,
+    setIsReFetch
+}) => {
+    let idExam = null;
+    displayDialog({
+        type: DIALOG_INFO,
+        title: "Choose exam for form",
+        content: (
+            <Fragment>
+                <div>
+                    Current exam:<b> {currentExam}</b>
+                </div>
+                <br/>
+                <Select
+                    style={{ width: '100%' }}
+                    showSearch
+                    optionFilterProp="children"
+                    placeholder="Choose one exam"
+                    onChange={(e) => idExam = e } >
+                    {
+                        listExams.map((item, index) => {
+                            return <Option key={index} value={+item.id}>
+                                {item.name}
+                            </Option>
+                        })
+                    }
+                </Select>
+            </Fragment>
+        ),
+        okText: "Update",
+        onOK: () => {
+            const opt = {
+                method: 'PUT',
+                url: `${UPDATE_EXAM_FORM}/${id}/ky-thi`,
+                data: {
+                    id_ky_thi: idExam
+                }
+            }
+            if (idExam === null) {
+                displayNotify(TOAST_ERROR, 'Cập nhật kỳ thi thất bại !')
+                return;
+            }
+            requestAPI(opt).then(({ data }) => {
+                if (data && data.status === 200) {
+                    setIsReFetch(!isReFetch);
+                    displayNotify(TOAST_SUCCESS, 'Cập nhật kỳ thi thành công !')
+                } else {
+                    displayNotify(TOAST_ERROR, data.errorMessage || 'Cập nhật kỳ thi thất bại !')
+                }
+                return;
+            })
+                .catch(() => displayNotify(TOAST_ERROR, 'Cập nhật kỳ thi thất bại !'))
+        }
+    })
 }
 
 const DetailExample = ({ ky_thi, displayDialog }) => {
     return (
-        displayDialog(DIALOG_INFO, 'Detail exam',
-            <Fragment>
+        displayDialog({
+            type: DIALOG_INFO,
+            title: 'Detail exam',
+            content: <Fragment>
                 <Row>
                     Exam name:
                     <Input disabled defaultValue={ky_thi.name} />
                 </Row>
-                <br/>
+                <br />
                 <Row>
                     Test time:
                     <Input disabled defaultValue={ky_thi.gio_thi} />
                 </Row>
-                <br/>
+                <br />
                 <Row>
                     Test date:
                     <Input disabled defaultValue={ky_thi.ngay_thi} />
                 </Row>
-                <br/>
+                <br />
                 <Row>
                     Start date:
-                    <Input disabled defaultValue={momentTimeSpanInput(ky_thi.ngay_bat_dau)} />
+                    <Input disabled defaultValue={ky_thi.ngay_bat_dau} />
                 </Row>
-                <br/>
+                <br />
                 <Row>
                     End date:
-                    <Input disabled defaultValue={momentTimeSpanInput(ky_thi.ngay_ket_thuc)} />
+                    <Input disabled defaultValue={ky_thi.ngay_ket_thuc} />
                 </Row>
-                <br/>
+                <br />
                 <Row>
                     Type exam:
                     <Input disabled defaultValue={ky_thi.loai_ky_thi} />
                 </Row>
             </Fragment>
-        )
+        })
     )
 }
 
-const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
+const MethodRegisterComponent = ({ 
+    displayDialog, 
+    displayNotify, 
+    listExams = [], 
+    adminActions 
+}) => {
     const [dataSrc, setDataSrc] = useState([]);
     const [pageIndex, setPageIndex] = useState(PAGE_INDEX);
     const [pageSize, setPageSize] = useState(PAGE_SIZE);
@@ -129,7 +201,9 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             dataIndex: 'code',
             render: code => //<RenderColumnComponent content={code} />
                 <ButtonLayout
-                    onClick={() => displayDialog(DIALOG_SUCCESS, 'Code: ', <RenderColumnComponent content={code} />)}
+                    onClick={() => displayDialog({
+                        type: DIALOG_SUCCESS, title: 'Code: ', content: <RenderColumnComponent content={code} />
+                    })}
                     size="small"
                     text={<Icon type="plus-circle" theme="twoTone" />} />
         },
@@ -186,14 +260,36 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
         {
             title: 'Exam',
             dataIndex: 'ky_thi',
-            render: exam => isEmptyObject(exam) ? 
-                <Row style={{ textAlign: 'center' }}><ButtonLayout size="small" text="Update exam" /></Row> :
-                <Row style={{ textAlign: 'center' }}> <ButtonLayout
-                    isDisabled={false}
-                    onClick={() => DetailExample({ky_thi: exam, displayDialog})}
+            render: (exam, row, index) => <Fragment>
+                <Row style={{ textAlign: 'center' }}>
+                    {/* {
+                        row.id_register_method === null ||
+                        row.row.id_register_method === ""
+                    } */}
+                    <ButtonLayout
+                    onClick={() =>
+                        UpdateExam({ 
+                            displayDialog, 
+                            listExams, 
+                            id: row.id, 
+                            displayNotify,
+                            isReFetch,
+                            setIsReFetch,
+                            currentExam: isEmptyObject(exam) ? "Not yet choose exam" : exam.name
+                    })}
                     size="small"
-                    type="primary"
-                    text=" View detail " /></Row>
+                    text="Update exam" />
+                </Row>
+                {
+                    !isEmptyObject(exam) &&
+                    <Row style={{ textAlign: 'center' }}> <ButtonLayout
+                        isDisabled={false}
+                        onClick={() => DetailExample({ ky_thi: exam, displayDialog })}
+                        size="small"
+                        type="primary"
+                        text=" View detail " />
+                    </Row>
+                }</Fragment>
         },
         {
             title: 'Email',
@@ -209,20 +305,7 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             title: 'Date create',
             dataIndex: 'created',
             render: created => <RenderColumnComponent type="date" content={created} />
-        },
-        // {
-        //     title: 'Edit',
-        //     dataIndex: 'id',
-        //     render: (id, row, index) => {
-        //         return (
-        //             <Fragment>
-        //                 <Link href={"/regiter-form/detail?id=" + id} >
-        //                     <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
-        //                 </Link>
-        //             </Fragment>
-        //         )
-        //     },
-        // },
+        }
     ];
 
 
@@ -246,7 +329,8 @@ const MethodRegisterComponent = ({ displayDialog, displayNotify }) => {
             setIsLoading(false);
 
         }
-        !didCancel && fetchData()
+        !didCancel && fetchData();
+        !didCancel && adminActions.getAllListExamsAPI();
         return () => {
             didCancel = true;
         };

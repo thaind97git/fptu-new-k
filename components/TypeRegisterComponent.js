@@ -61,18 +61,18 @@ const MethodRegisterComponent = ({ displayDialog }) => {
         },
         {
             title: 'Edit',
-            dataIndex: 'id',
-            render: (id, row, index) => {
+            dataIndex: '',
+            render: (_, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/regiter-form/detail?id=" + id} >
+                        <Link href={"/regiter-form/detail?id=" + row.id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
                             onClick={() => ConfirmLayout({
                                 title: 'Delete', content: 'Do you want delete this record ?',
-                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(id, displayNotify, isReFetch, setIsReFetch)
-                            })} size="small" value={id} type="danger" text="Delete"
+                                okText: 'Delete', cancelText: 'No', functionOk: () => Delete(row.id, displayNotify, isReFetch, setIsReFetch)
+                            })} size="small" value={row.id} type="danger" text="Delete"
                         />
                     </Fragment>
                 )

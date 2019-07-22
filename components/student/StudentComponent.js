@@ -147,7 +147,7 @@ const StudentComponent = ({ displayNotify }) => {
                     isLoading={isLoading}
                     data={dataSrc}
                     rowKey={record => record.key}
-                    scrollX={1100}
+                    scrollX={1300}
                     pageSize={pageSize}
                     onChangePage={getPage}
                     totalPage={totalPage}/>

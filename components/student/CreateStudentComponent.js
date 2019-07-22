@@ -240,7 +240,7 @@ class CreateStudentComponent extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={span} md={md} lg={lg}>
+                            {/* <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Avatar">
                                     {getFieldDecorator('avatar', {
                                         valuePropName: 'fileList',
@@ -253,7 +253,7 @@ class CreateStudentComponent extends Component {
                                         </Upload>,
                                     )}
                                 </Form.Item>
-                            </Col>
+                            </Col> */}
                             <Col span={span} md={md} lg={lg}>
                                 <Form.Item label="Sex">
                                     {getFieldDecorator('gioi_tinh', {
