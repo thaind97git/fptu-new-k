@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { pick } from 'lodash/fp';
 import { Pagination, Icon } from 'antd';
 import { requestAPI } from '../config';
-import { GET_TYPE_REGISTER } from '../constant/UrlApi';
+import { GET_METHOD_REGISTER } from '../constant/UrlApi';
 import { PAGE_SIZE, PAGE_INDEX } from '../constant/constants';
 import { DIALOG_ERROR, DIALOG_INFO, DIALOG_WARN, DIALOG_SUCCESS } from '../utils/actions';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ const MethodRegisterComponent = ({ displayDialog }) => {
         {
             title: 'Method type',
             dataIndex: 'id_register_method_type',
-            render: type => <RenderColumnComponent content={type} />
+            render: type => <RenderColumnComponent type='method' content={type} />
             // width: '20%',
         },
         {
@@ -65,7 +65,7 @@ const MethodRegisterComponent = ({ displayDialog }) => {
             render: (_, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/regiter-form/detail?id=" + row.id} >
+                        <Link href={"/register-method/detail?id=" + row.id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
@@ -86,7 +86,7 @@ const MethodRegisterComponent = ({ displayDialog }) => {
         setIsLoading(true);
         const opt = {
             method: 'GET' ,
-            url: `${GET_TYPE_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
+            url: `${GET_METHOD_REGISTER}?page_num=${pageIndex}&page_row=${pageSize}` 
         }
         const fetchData = async () => {
             try {

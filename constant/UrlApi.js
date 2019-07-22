@@ -5,7 +5,7 @@ const PORT = ":3000";
 // 172.20.10.11
 // localhost
 // myip
-const SERVER_IP = "172.20.10.2";
+const SERVER_IP = "192.168.1.34";
 // const SERVER_IP = "localhost";
 const SERVER_PATH = HTTP + SERVER_IP + PORT + '/api/v1';
 
@@ -16,7 +16,7 @@ export const LOGIN = SERVER_PATH + "/nhan-vien/dang-nhap";
 export const LOGOUT = SERVER_PATH + "/dang-xuat";
 /*============USER================*/
 export const GET_USERS = SERVER_PATH + "/nhan-vien";
-export const CREATE_USER = SERVER_PATH + "/nhan-vien";
+export const CREATE_USER = SERVER_PATH + "/nhan-vien/dang-ky";
 export const UPDATE_USER = SERVER_PATH + "/nhan-vien";
 export const DELETE_USER = SERVER_PATH + "/nhan-vien";
 export const GET_USER = SERVER_PATH + "/nhan-vien";
@@ -52,7 +52,11 @@ export const GET_WARD = SERVER_PATH + "/dia-chi/phuong-xa";
 export const GET_FORM_REGISTER = SERVER_PATH + "/form-dang-ky";
 export const UPDATE_RESULT_FORM = SERVER_PATH + "/form-dang-ky"
 export const UPDATE_EXAM_FORM = SERVER_PATH + "/form-dang-ky";
-export const GET_TYPE_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
+
+export const GET_METHOD_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
+export const UPDATE_METHOD_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
+export const DELETE_METHOD_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
+export const GET_ONE_METHOD_REGISTER = SERVER_PATH + "/phuong-thuc-dang-ky";
 
 
 module.exports.URL_SERVER = {

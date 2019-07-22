@@ -19,8 +19,12 @@ const RenderColumnComponent = ({
                     : content === 'fail' ? <ButtonLayout type="outline-danger" size="small" text={content} />
                     : <div className="unknow">Not yet</div>
                 )
+                : type === 'method' ?
+                    content === 'duthi' ? 'Dự thi' : content === 'hocbong' ? 'Học Bổng' :
+                    content === 'mienthihocba' ? 'Miễn thi học bạ' : content === 'mienthikhac' ? 'Miễn thi khác'
+                    : <div className="unknow">Not yet</div>
                 : type === 'sex' ? (
-                      content === 0 ? 'Male' : content === 1 ? 'Fmale' 
+                      content === 1 ? 'Male' : content === 2 ? 'Fmale' 
                     : <div className="unknow">Not yet</div>
                 )
                 : type === 'status' ? <StatusComponent status={status} />

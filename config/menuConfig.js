@@ -103,14 +103,14 @@ export const menus = [
     {
         subKey: 'sub7',
         subIcon: 'form',
-        subText: 'Type register',
+        subText: 'Method register',
         subLink: undefined,
         subItem: [
             {
                 itemKey: 'sub7.1',
-                itemLink: '/register-type',
+                itemLink: '/register-method',
                 itemIcon: 'unordered-list',
-                itemText: 'List register type'
+                itemText: 'List register method'
             }
         ]
     },
