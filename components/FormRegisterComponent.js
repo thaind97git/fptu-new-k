@@ -18,6 +18,7 @@ import ButtonLayout from '../layouts/ButtonLayout';
 import RenderColumnComponent from './RenderComlunComponent';
 
 const { Option } = Select;
+const { TextArea } = Input;
 const connectToRedux = connect(
     pick(['listExams']),
     dispatch => ({
@@ -179,6 +180,31 @@ const DetailExample = ({ ky_thi, displayDialog }) => {
     )
 }
 
+const DetailMethod = ({ method, displayDialog }) => {
+    return (
+        displayDialog({
+            type: DIALOG_INFO,
+            title: 'Detail register method of student',
+            content: <Fragment>
+                <Row>
+                    Register method id:
+                    <Input disabled defaultValue={method.id} />
+                </Row>
+                <br />
+                <Row>
+                    Register method type:
+                    <Input disabled defaultValue={method.id_register_method_type} />
+                </Row>
+                <br />
+                <Row>
+                    Register method name:
+                    <TextArea disabled defaultValue={method.name} />
+                </Row>
+            </Fragment>
+        })
+    )
+}
+
 const MethodRegisterComponent = ({ 
     displayDialog, 
     displayNotify, 
@@ -292,6 +318,20 @@ const MethodRegisterComponent = ({
                 }</Fragment>
         },
         {
+            title: 'Register method',
+            dataIndex: 'register_method',
+            render: (method, row, index) => <Fragment>
+                {
+                    !isEmptyObject(method) ? <Row style={{ textAlign: 'center' }}> <ButtonLayout
+                        onClick={() => DetailMethod({ method, displayDialog })}
+                        size="small"
+                        type="primary"
+                        text=" View detail " />
+                    </Row> : <div style={{ textAlign: 'center' }} className="unknow">Not yet</div>
+                }
+                </Fragment>
+        },
+        {
             title: 'Email',
             dataIndex: 'email_lien_he',
             render: email => <RenderColumnComponent content={email} />
@@ -350,7 +390,7 @@ const MethodRegisterComponent = ({
                     isLoading={isLoading}
                     data={dataSrc}
                     rowKey={record => record.key}
-                    scrollX={1600}
+                    scrollX={1800}
                     pageSize={pageSize}
                     onChangePage={getPage}
                     totalPage={totalPage} />

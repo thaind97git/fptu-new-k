@@ -58,7 +58,10 @@ const StudentComponent = ({ displayNotify }) => {
         {
             title: 'Avatar',
             dataIndex: 'avatar',
-            render: avatar => <RenderColumnComponent type="avatar" content={avatar} />
+            render: avatar => {
+                console.log(avatar)
+                return <RenderColumnComponent type="avatar" content={avatar} />
+            }
         },
         {
             title: 'Student name',

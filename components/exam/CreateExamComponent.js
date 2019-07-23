@@ -8,7 +8,7 @@ import { requestAPI, formItemLayout, spanCol } from '../../config';
 import Router from 'next/router';
 import { formatDateServer, formatTimeServer } from '../../utils/dateUtils';
 
-const { Option } = Select;
+const { TextArea } = Input;
 const connectToRedux = connect(null, dispatch => ({
     displayNotify: (type, message) => {
         dispatch({ type: type, payload: { message: message, options: {} } })
@@ -68,7 +68,8 @@ const CreateExamComponent = ({ form, displayNotify, displayDialog }) => {
                         }
                     }).catch(({ response }) => {
                         setLoadingButton(false)
-                        response && displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
+                        response ? displayNotify(TOAST_ERROR, response.errorMessage || 'Có lỗi xảy ra')
+                        : displayNotify(TOAST_ERROR, 'Có lỗi xảy ra')
                     })
             }
         });
@@ -136,7 +137,7 @@ const CreateExamComponent = ({ form, displayNotify, displayDialog }) => {
                         <Col span={span} md={md} lg={lg}>
                             <Form.Item label="Description">
                                 {getFieldDecorator('ghi_chu')(
-                                    <Input/>
+                                    <TextArea/>
                                 )}
                             </Form.Item>
                         </Col>
