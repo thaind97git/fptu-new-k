@@ -100,7 +100,7 @@ const ExamComponent = ({ displayNotify }) => {
             render: (id, row, index) => {
                 return (
                     <Fragment>
-                        <Link href={"/school/detail?id=" + id} >
+                        <Link href={"/exam/detail?id=" + id} >
                         <ButtonLayout text={<Icon type="edit" />} size="small" type="primary"></ButtonLayout>
                         </Link>
                         <ButtonLayout
