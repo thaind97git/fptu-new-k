@@ -21,3 +21,7 @@ export const momentTimeSpanPicker = (timeSpan) => {
 export const momentTimeSpanInput = (timeSpan) => {
     return timeSpan ? moment.unix(+timeSpan).format("DD/MM/YYYY") : null;
 }
+
+export const momentTimePickerUser = (time) => {
+    return time ? moment(time, 'h:mm A') : null
+}

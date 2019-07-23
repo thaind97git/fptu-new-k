@@ -10,7 +10,7 @@ module.exports = {
       ...config.plugins,
       // Read the .env file
       new Dotenv({
-        path: path.resolve(__dirname, '/env/.env'),
+        path: path.join(__dirname, '/env/.env'),
         systemvars: true
       })
     ];
